@@ -1,4 +1,5 @@
 from league import *
+from components import *
 import pygame
 
 class Player(Character):
@@ -76,6 +77,8 @@ class Player(Character):
     def move_up(self, time):
         self.collisions = []
         amount = self.delta * time
+        s = SoundManager()
+        s.play_sound('thanks.wav')
         try:
             if self.y - amount < 0:
                 raise OffScreenTopException
@@ -91,6 +94,8 @@ class Player(Character):
 
     def move_down(self, time):
         amount = self.delta * time
+        s = SoundManager()
+        s.play_sound('oh.wav')
         try:
             if self.y + amount > self.world_size[1] - Settings.tile_size:
                 raise OffScreenBottomException

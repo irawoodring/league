@@ -4,8 +4,10 @@ import pygame
 import sys
 sys.path.append('..')
 import league
+from components import *
 from player import Player
 from overlay import Overlay
+
 
 """This file is garbage. It was a hastily coded mockup
 to demonstrate how to use the engine.  We will be creating
@@ -25,8 +27,11 @@ def main():
     world_size = (t.wide*league.Settings.tile_size, t.high *league.Settings.tile_size)
     e.drawables.add(t.passable.sprites())
     e.drawables.add(b.passable.sprites()) 
+    m = SoundManager()
+    m.bgm_start('Song_For_Someone.wav')
     p = Player(2, 400, 300)
     o = Overlay(p)
+    bu = MusicButton()
     p.blocks.add(t.impassable)
     p.world_size = world_size
     p.rect = p.image.get_rect()
@@ -37,11 +42,13 @@ def main():
     e.drawables.add(p)
     e.drawables.add(q)
     e.drawables.add(o)
+    e.drawables.add(bu)
     c = league.LessDumbCamera(800, 600, p, e.drawables, world_size)
     #c = league.DumbCamera(800, 600, p, e.drawables, world_size)
     
     e.objects.append(c)
     e.objects.append(o)
+    e.objects.append(bu)
 
     e.collisions[p] = (q, p.ouch) 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
