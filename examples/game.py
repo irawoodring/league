@@ -37,8 +37,8 @@ def main():
     e.drawables.add(p)
     e.drawables.add(q)
     e.drawables.add(o)
-    c = league.LessDumbCamera(800, 600, p, e.drawables, world_size)
-    #c = league.DumbCamera(800, 600, p, e.drawables, world_size)
+    c = league.LessDumbCamera2(800, 600, p, e.drawables, world_size)
+    #c = league.DumbCamera2(800, 600, p, e.drawables, world_size)
     
     e.objects.append(c)
     e.objects.append(o)

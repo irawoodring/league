@@ -5,6 +5,8 @@ import sys
 sys.path.append('..')
 import league
 from player import Player
+from projectile import Projectile
+from overlay import Overlay
 
 def all_done(self):
     print("Peace out ya'll.")
@@ -43,13 +45,21 @@ for i in range(6):
     e.drawables.add(scs_b[i])
 
 z = Player(3)
-z.rect.x = 500
-z.rect.y = 500
 e.drawables.add(z)
+e.objects.append(z)
+z.x = 600
+z.y = 576
+
+pr = Projectile(64, 576, sprites.sprites[1060].image )
+e.objects.append(pr)
+e.drawables.add(pr)
+e.collisions[z] = (pr, z.destroy) 
+ov = Overlay(z)
+e.drawables.add(ov)
+e.objects.append(ov)
 
 move_zombie = pygame.USEREVENT + 1
 pygame.time.set_timer(move_zombie, 1000)
 e.events[move_zombie] = z.move_left
-
 e.drawables.add(t.passable.sprites())
 e.run()

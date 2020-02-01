@@ -119,3 +119,7 @@ class Player(Character):
         if now - self.last_hit > 1000:
             self.health = self.health - 10
             self.last_hit = now
+
+    def destroy(self):
+        self.x = self.x + 10
+        self.health = self.health - 1
