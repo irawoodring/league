@@ -9,6 +9,10 @@ from league import OffScreenException
 from league import Drawable
 from league import Settings
 
+import logging
+
+logger = logging.getLogger('Player')
+
 class ActorBase(Character):
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
         super().__init__(z=z, x=x, y=y)
@@ -39,11 +43,11 @@ class Player(ActorBase):
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
         super().__init__(image_path, image_size, z=z, x=x, y=y)
         self.velocity = [0,0]
-        self.speed = 512
+        self.speed = 1
 
     def move_player(self, time, inputs):
         if inputs['W'] is True:
-            self.velocity[1] = self.speed
+            self.velocity[1] = -self.speed
         else: 
             self.velocity[1] = 0
 

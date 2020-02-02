@@ -37,7 +37,7 @@ def main():
     engine.init_pygame()
 
     #p = Player(2,300,450)
-    player = Player('./assets/idle-1.png',(128, 128))
+    player = Player('./assets/idle-1.png',(128, 128), 2, 300, 450)
 
 
     # create background and level
@@ -54,4 +54,5 @@ def main():
     engine.run()
 
 if __name__=='__main__':
+    league.logger_init()
     main()
