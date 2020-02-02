@@ -2,7 +2,7 @@
 
 import pygame
 import sys
-sys.path.append('..')
+sys.path.append('../')
 import league
 from background import Background
 from player import Player
