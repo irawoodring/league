@@ -5,7 +5,9 @@ import sys
 sys.path.append('../')
 import league
 from background import Background
-from player import Player
+from actors import Player
+import neon_engine
+
 
 """
 Copied and modified from example.
@@ -30,22 +32,26 @@ def init_map(engine, p):
 
 
 def main():
-    e = league.Engine("Neon Souls")
+    engine = neon_engine.NeonEngine('Neon Souls')
     
-    e.init_pygame()
+    engine.init_pygame()
 
-    p = Player(2,300,450)
+    #p = Player(2,300,450)
+    player = Player('./assets/idle-1.png',(128, 128))
+
 
     # create background and level
-    init_map(e, p)
+    init_map(engine, player)
 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
-    e.key_events[pygame.K_a] = p.move_left
-    e.key_events[pygame.K_d] = p.move_right
-    e.key_events[pygame.K_w] = p.move_up
-    e.key_events[pygame.K_s] = p.move_down
-    e.events[pygame.QUIT] = e.stop
-    e.run()
+    # e.key_events[pygame.K_a] = p.move_left
+    # e.key_events[pygame.K_d] = p.move_right
+    # e.key_events[pygame.K_w] = p.move_up
+    # e.key_events[pygame.K_s] = p.move_down
+    engine.movement_function = player.move_player
+
+    engine.events[pygame.QUIT] = engine.stop
+    engine.run()
 
 if __name__=='__main__':
     main()
