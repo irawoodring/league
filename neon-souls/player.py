@@ -15,13 +15,33 @@ class Player(Character):
         # Last time I was hit
         self.last_hit = pygame.time.get_ticks()
         # A unit-less value.  Bigger is faster.
-        self.delta = 512
+        self.delta = 256
         # Where the player is positioned
         self.x = x
         self.y = y
         # The image to use.  This will change frequently
         # in an animated Player class.
-        self.image = pygame.image.load('./assets/idle-1.png').convert_alpha()
+        self.images = []
+        self.images.append(pygame.image.load('./assets/walk-1.png'))
+        self.images.append(pygame.image.load('./assets/walk-2.png'))
+        self.images.append(pygame.image.load('./assets/walk-3.png'))
+        self.images.append(pygame.image.load('./assets/walk-4.png'))
+        self.images.append(pygame.image.load('./assets/walk-5.png'))
+        self.images.append(pygame.image.load('./assets/walk-6.png'))
+        self.images.append(pygame.image.load('./assets/walk-7.png'))
+        self.images.append(pygame.image.load('./assets/walk-8.png'))
+        self.images.append(pygame.image.load('./assets/walk-9.png'))
+        self.images.append(pygame.image.load('./assets/walk-10.png'))
+        self.images.append(pygame.image.load('./assets/walk-11.png'))
+        self.images.append(pygame.image.load('./assets/walk-12.png'))
+        self.images.append(pygame.image.load('./assets/walk-13.png'))
+        self.images.append(pygame.image.load('./assets/walk-14.png'))
+        self.images.append(pygame.image.load('./assets/walk-15.png'))
+        self.images.append(pygame.image.load('./assets/walk-16.png'))
+
+        self.index = 0
+
+        self.image = self.images[self.index]
         self.image = pygame.transform.scale(self.image, (128, 128))
         self.rect = self.image.get_rect()
         # How big the world is, so we can check for boundries
@@ -44,8 +64,18 @@ class Player(Character):
         self.font = pygame.font.Font('freesansbold.ttf',32)
         self.overlay = self.font.render(str(self.health) + "        4 lives", True, (0,0,0))
 
+
     def move_left(self, time):
         amount = self.delta * time
+        self.index += 1
+
+        if self.index >= len(self.images):
+            self.index = 0
+
+        self.image = self.images[self.index]
+        self.image = pygame.transform.scale(self.image, (128, 128))
+        self.rect = self.image.get_rect()
+
         try:
             if self.x - amount < 0:
                 raise OffScreenLeftException
@@ -61,6 +91,15 @@ class Player(Character):
     def move_right(self, time):
         self.collisions = []
         amount = self.delta * time
+        self.index += 1
+
+        if self.index >= len(self.images):
+            self.index = 0
+
+        self.image = self.images[self.index]
+        self.image = pygame.transform.scale(self.image, (128, 128))
+        self.rect = self.image.get_rect()
+        
         try:
             if self.x + amount > self.world_size[0] - Settings.tile_size:
                 raise OffScreenRightException
@@ -107,7 +146,11 @@ class Player(Character):
     def update(self, time):
         self.rect.x = self.x
         self.rect.y = self.y
+
+        
+
         self.collisions = []
+        
         for sprite in self.blocks:
             self.collider.rect.x= sprite.x
             self.collider.rect.y = sprite.y
@@ -119,3 +162,5 @@ class Player(Character):
         if now - self.last_hit > 1000:
             self.health = self.health - 10
             self.last_hit = now
+
+    
