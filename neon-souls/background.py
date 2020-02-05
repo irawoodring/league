@@ -2,9 +2,9 @@ import league
 import pygame
 
 class Background(league.DGameObject):
-    def __init__(self, image_path):
+    def __init__(self, image_path, layer=0):
         super().__init__(self)
-        self._layer = -1
+        self._layer = layer
         self.image = pygame.image.load(image_path).convert()
         self.image = pygame.transform.scale(self.image, (league.Settings.width, league.Settings.height))
         self.image.set_alpha(255)
