@@ -28,6 +28,7 @@ def init_map(engine, player):
     # engine.objects.append(cam)
     player.world_size = world_size
     player.rect = player.image.get_rect()
+    player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
 
