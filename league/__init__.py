@@ -16,3 +16,4 @@ from .characters import OffScreenRightException
 from .characters import OffScreenTopException 
 from .characters import OffScreenBottomException 
 from .game_objects import DUGameObject
+from .logger import logger_init
