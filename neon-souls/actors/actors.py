@@ -8,6 +8,7 @@ from league import Character
 from league import OffScreenException
 from league import Drawable
 from league import Settings
+from physics import GravityBound, GravityManager
 
 import logging
 
@@ -39,11 +40,12 @@ class ActorBase(Character):
         self.collider.image = pygame.Surface([Settings.tile_size, Settings.tile_size])
         self.collider.rect = self.collider.image.get_rect()
 
-class Player(ActorBase):
+class Player(ActorBase, GravityBound):
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
         super().__init__(image_path, image_size, z=z, x=x, y=y)
         self.velocity = [0,0]
         self.speed = 1
+        self.gravity_name = 'normal'
 
     def move_player(self, time, inputs):
         if inputs['W'] is True:
@@ -88,6 +90,14 @@ class Player(ActorBase):
             self.collider.rect.y = sprite.y
             if pygame.sprite.collide_rect(self, self.collider):
                 self.collisions.append(sprite)
+    
+    def process_gravity(self):
+        gravity_manager = GravityManager.get_instance()
+        gravity = gravity_manager.get_gravity(self.gravity_name)
+        self.velocity[0] = self.velocity[0] + gravity[0]
+        self.velocity[1] = self.velocity[1] + gravity[1]
+
+    
 
 
     
