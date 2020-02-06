@@ -21,7 +21,7 @@ class GravityManager:
     def add_gravity(self, gravity_name, gravity_vector):
         self.gravity_map[gravity_name] = gravity_vector
 
-    def get_gravity(self, gravity_name)
+    def get_gravity(self, gravity_name):
         self.gravity_map.get(gravity_name, (0, 0))
 
 class GravityBound(abc.ABC):
