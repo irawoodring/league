@@ -13,7 +13,7 @@ LOG_FILE_NAME = 'game.log'
 
 # Modifiy the constant below to set the logging level the levels are
 # DEBUG, INFO, WARNING, ERROR, CRITICAL
-LOGGING_LEVEL = logging.DEBUG
+LOGGING_LEVEL = logging.INFO
 ################################################################################
 
 

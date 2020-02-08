@@ -8,6 +8,7 @@ from league import Character
 from league import OffScreenException
 from league import Drawable
 from league import Settings
+from physics import GravityBound, GravityManager
 
 import logging
 
@@ -39,15 +40,17 @@ class ActorBase(Character):
         self.collider.image = pygame.Surface([Settings.tile_size, Settings.tile_size])
         self.collider.rect = self.collider.image.get_rect()
 
-class Player(ActorBase):
-    def __init__(self, image_path, image_size, z=0, x=0, y=0):
+class Player(ActorBase, GravityBound):
+    def __init__(self, image_path, image_size, gravity_region, z=0, x=0, y=0):
         super().__init__(image_path, image_size, z=z, x=x, y=y)
         self.velocity = [0,0]
-        self.speed = 1
+        self.speed = 100
+        self.gravity_region = gravity_region
 
     def move_player(self, time, inputs):
+        amount = self.speed * time
         if inputs['W'] is True:
-            self.velocity[1] = -self.speed
+            self.velocity[1] = -amount
         else: 
             self.velocity[1] = 0
 
@@ -56,9 +59,9 @@ class Player(ActorBase):
         # If either key is pressed BUT not both @ the same time.
         if inputs['D'] ^ inputs['A']:
             if inputs['D'] is True:
-                self.velocity[0] = self.speed
+                self.velocity[0] = amount
             elif inputs['A'] is True:
-                self.velocity[0] = -self.speed
+                self.velocity[0] = -amount
         else:
             self.velocity[0] = 0
 
@@ -78,6 +81,8 @@ class Player(ActorBase):
         except:
             pass
 
+        self.velocity = [0,0]
+
     def in_world(self):
         """
         Todo Check that we are still in the world
@@ -95,6 +100,30 @@ class Player(ActorBase):
             self.collider.rect.y = sprite.y
             if pygame.sprite.collide_rect(self, self.collider):
                 self.collisions.append(sprite)
+    
+    def process_gravity(self, time):
+        gravity_manager = GravityManager.get_instance()
+        gravity = gravity_manager.get_gravity(self.gravity_region)
+        grav_amount = (gravity[0] * time, gravity[1] * time)
+        self.velocity[0] = self.velocity[0] + grav_amount[0]
+        self.velocity[1] = self.velocity[1] + grav_amount[1]
+        
+        # logger.debug('velocity: {}'.format(self.velocity))
+        try:
+            if not self.in_world():
+                raise OffScreenException
+            else:
+                self.x = self.x + self.velocity[0]
+                self.y = self.y + self.velocity[1]
+                self.update(0)
+                # TODO: manage collisions
+        except:
+            pass
+
+        self.velocity = [0,0]
+
+
+    
 
 
     
