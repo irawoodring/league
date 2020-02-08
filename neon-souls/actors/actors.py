@@ -31,7 +31,7 @@ class ActorBase(Character):
         self.rect = self.image.get_rect()
         
         self.blocks = pygame.sprite.Group()
-
+# Not really sure I see the point of naming circle as the collide function.
         self.collide_function = pygame.sprite.collide_circle
         self.collisions = []
 
@@ -69,7 +69,12 @@ class Player(ActorBase):
                 self.x = self.x + self.velocity[0]
                 self.y = self.y + self.velocity[1]
                 self.update(0)
-                # TODO: manage collisions
+                if len(self.collisions) > 0:
+                    self.x = self.x - self.velocity[0]
+                    self.y = self.y - self.velocity[1]
+                    self.update(0)
+                    self.collisions = []
+                # TODO: manage collisions (I think they're handled here anyway)
         except:
             pass
 
@@ -79,6 +84,8 @@ class Player(ActorBase):
         """
         return True
 
+# Checks for collisions by comparing coordinates of self and iterative sprite in a certain group.
+    #TODO Explore the possibility that we may have more than one sprite group.
     def update(self, time):
         self.rect.x = self.x
         self.rect.y = self.y
