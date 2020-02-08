@@ -6,6 +6,7 @@ sys.path.append('../')
 import league
 from background import Background
 from actors import Player
+from physics import GravityManager
 import neon_engine
 
 
@@ -27,19 +28,19 @@ def init_map(engine, p):
     engine.objects.append(p)
     engine.drawables.add(p)
 
-
-
-
-
 def main():
     engine = neon_engine.NeonEngine('Neon Souls')
     
     engine.init_pygame()
 
     #p = Player(2,300,450)
-    player = Player('./assets/idle-1.png',(128, 128), 2, 300, 450)
+    player = Player('./assets/idle-1.png',(128, 128), 'default', 2, 300, 450)
 
+    gravity_manager = GravityManager.get_instance()
+    print(gravity_manager)
 
+    gravity_manager.add_gravity('default', (0, 50))
+    
     # create background and level
     init_map(engine, player)
 
@@ -49,6 +50,7 @@ def main():
     # e.key_events[pygame.K_w] = p.move_up
     # e.key_events[pygame.K_s] = p.move_down
     engine.movement_function = player.move_player
+    engine.physics_functions.append(player.process_gravity)
 
     engine.events[pygame.QUIT] = engine.stop
     engine.run()
