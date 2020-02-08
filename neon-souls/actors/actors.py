@@ -69,7 +69,8 @@ class Player(ActorBase):
                 self.x = self.x + self.velocity[0]
                 self.y = self.y + self.velocity[1]
                 self.update(0)
-                if len(self.collisions) != 0:
+                if len(self.collisions) > 0:
+                    self.x = self.x - self.velocity[0]
                     self.y = self.y - self.velocity[1]
                     self.update(0)
                     self.collisions = []
