@@ -12,20 +12,25 @@ import neon_engine
 """
 Copied and modified from example.
 """
-def init_map(engine, p):
+def init_map(engine, player):
     """Create map and background"""
     league.Settings.tile_size = 16
     league.Settings.fill_color = (31, 38, 84)
     sprites = league.Spritesheet('./assets/tileset-collapsed.png', league.Settings.tile_size, 14)
-    level1 = league.Tilemap('./assets/level1.lvl', sprites, layer = 1)
-    world_size = (level1.wide*league.Settings.tile_size, level1.high*league.Settings.tile_size)
+    level1 = league.Tilemap('./assets/level1.lvl', sprites, layer = 2)
     engine.drawables.add(level1.passable.sprites()) 
-    background = Background('./assets/near-buildings-bg.png')
-    engine.drawables.add(background) 
-    p.world_size = world_size
-    p.rect = p.image.get_rect()
-    engine.objects.append(p)
-    engine.drawables.add(p)
+    full_background = Background('./assets/skyline-a.png', 0)
+    background = Background('./assets/buildings-bg.png', 1)
+    engine.drawables.add(full_background)
+    engine.drawables.add(background)
+    world_size = (level1.wide*league.Settings.tile_size, level1.high*league.Settings.tile_size)
+    # cam = league.LessDumbCamera(400, 200, player, engine.drawables, world_size)
+    # engine.objects.append(cam)
+    player.world_size = world_size
+    player.rect = player.image.get_rect()
+    player.blocks.add(level1.impassable)
+    engine.objects.append(player)
+    engine.drawables.add(player)
 
 
 
@@ -37,7 +42,7 @@ def main():
     engine.init_pygame()
 
     #p = Player(2,300,450)
-    player = Player('./assets/idle-1.png',(128, 128), 2, 300, 450)
+    player = Player('./assets/idle-1.png',(128, 128), 3, 300, 430)
 
 
     # create background and level
