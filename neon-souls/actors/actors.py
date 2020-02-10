@@ -9,6 +9,7 @@ from league import OffScreenException
 from league import Drawable
 from league import Settings
 from physics import GravityBound, GravityManager
+from animation import WalkingAnimatedSprite
 
 import logging
 
@@ -46,6 +47,7 @@ class Player(ActorBase, GravityBound):
         self.velocity = [0,0]
         self.speed = 100
         self.gravity_region = gravity_region
+        self.facing_left = False
 
     def move_player(self, time, inputs):
         amount = self.speed * time
@@ -89,7 +91,7 @@ class Player(ActorBase, GravityBound):
         """
         return True
 
-# Checks for collisions by comparing coordinates of self and iterative sprite in a certain group.
+   # Checks for collisions by comparing coordinates of self and iterative sprite in a certain group.
     #TODO Explore the possibility that we may have more than one sprite group.
     def update(self, time):
         self.rect.x = self.x
