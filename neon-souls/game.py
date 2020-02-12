@@ -8,6 +8,7 @@ from background import Background
 from actors import Player
 from physics import GravityManager
 import neon_engine
+import json
 
 
 """
@@ -28,6 +29,7 @@ def init_map(engine, player):
     # cam = league.LessDumbCamera(400, 200, player, engine.drawables, world_size)
     # engine.objects.append(cam)
     player.world_size = world_size
+    print(player.image)
     player.rect = player.image.get_rect()
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
@@ -38,7 +40,13 @@ def main():
     
     engine.init_pygame()
 
-    player = Player('./assets/idle-1.png',(128, 128), 'default', 2, 300, 450)
+    with open('player_sprites.json', 'r') as p_file:
+        player_sprites = json.load(p_file)
+
+    player_static = player_sprites['static_sprites']
+    player_walking = player_sprites['walking_sprites']
+
+    player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 450)
 
     gravity_manager = GravityManager.get_instance()
     print(gravity_manager)

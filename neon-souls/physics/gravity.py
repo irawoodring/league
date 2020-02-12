@@ -25,8 +25,8 @@ class GravityManager:
         self.gravity_map[gravity_name] = gravity_vector
 
     def get_gravity(self, gravity_name):
-        logger.debug(gravity_name)
-        logger.debug(self.gravity_map)
+        # logger.debug(gravity_name)
+        # logger.debug(self.gravity_map)
         return self.gravity_map[gravity_name]
 
 class GravityBound(abc.ABC):

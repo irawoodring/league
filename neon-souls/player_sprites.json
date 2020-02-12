@@ -1,0 +1,21 @@
+{
+  "static_sprites":"./assets/idle-1.png",
+  "walking_sprites": [
+    "./assets/walk-1.png",
+    "./assets/walk-2.png",
+    "./assets/walk-3.png",
+    "./assets/walk-4.png",
+    "./assets/walk-5.png",
+    "./assets/walk-6.png",
+    "./assets/walk-7.png",
+    "./assets/walk-8.png",
+    "./assets/walk-9.png",
+    "./assets/walk-10.png",
+    "./assets/walk-11.png",
+    "./assets/walk-12.png",
+    "./assets/walk-13.png",
+    "./assets/walk-14.png",
+    "./assets/walk-15.png",
+    "./assets/walk-16.png"
+  ]
+}
