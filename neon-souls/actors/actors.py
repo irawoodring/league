@@ -15,7 +15,7 @@ import logging
 
 logger = logging.getLogger('Player')
 
-class ActorBase(Character):
+class ActorBase(Character, GravityBound):
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
         super().__init__(z=z, x=x, y=y)
 
@@ -46,9 +46,11 @@ class ActorBase(Character):
 
 
 class Player(ActorBase, GravityBound):
+    MAX_JUMP_VELOCITY = -10
     def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0):
         super().__init__(None, image_size, z=z, x=x, y=y)
         self.velocity = [0,0]
+        self.gravity_vector = [0,0]
         self.speed = 100
         self.gravity_region = gravity_region
         self.facing_left = False
@@ -60,9 +62,10 @@ class Player(ActorBase, GravityBound):
     def move_player(self, time, inputs):
         amount = self.speed * time
         if inputs['W'] is True:
-            self.velocity[1] = -amount
-        else: 
-            self.velocity[1] = 0
+            jump_velocity = self.velocity[1] - amount
+            self.velocity[1] = jump_velocity \
+                if jump_velocity >= self.MAX_JUMP_VELOCITY else self.MAX_JUMP_VELOCITY
+            
 
         # XOR Statement
         # https://python-reference.readthedocs.io/en/latest/docs/operators/bitwise_XOR.html
@@ -75,29 +78,27 @@ class Player(ActorBase, GravityBound):
         else:
             self.velocity[0] = 0
 
+        ## PUT THIS AFTER ALL the calculations
         if True in inputs.values():
             self.facing_left = self.velocity[0] < 0
 
         self.get_image(self.velocity)
 
-        try:
-            if not self.in_world():
-                raise OffScreenException
-            else:
-                self.x = self.x + self.velocity[0]
-                self.y = self.y + self.velocity[1]
-                self.update(0)
-                if len(self.collisions) > 0:
-                    logger.info(self.collisions[0].group()) # Statement is breaking collisions for some reason. How do i find out group? 
-                    self.x = self.x - self.velocity[0]
-                    self.y = self.y - self.velocity[1]
-                    self.update(0)
-                    self.collisions = []
-        except:
-            pass
-
-        # logger.debug('velocity: {}'.format(self.velocity))
-        self.velocity = [0,0]
+        # try:
+        #     if not self.in_world():
+        #         raise OffScreenException
+        #     else:
+        #         self.x = self.x + self.velocity[0]
+        #         self.y = self.y + self.velocity[1]
+        #         self.update(0)
+        #         if len(self.collisions) > 0:
+        #             logger.info(self.collisions[0].group()) # Statement is breaking collisions for some reason. How do i find out group? 
+        #             self.x = self.x - self.velocity[0]
+        #             self.y = self.y - self.velocity[1]
+        #             self.update(0)
+        #             self.collisions = []
+        # except:
+        #     pass
 
     def in_world(self):
         """
@@ -108,6 +109,9 @@ class Player(ActorBase, GravityBound):
    # Checks for collisions by comparing coordinates of self and iterative sprite in a certain group.
     #TODO Explore the possibility that we may have more than one sprite group.
     def update(self, time):
+        self.x = self.x + self.velocity[0]
+        self.y = self.y + self.velocity[1]
+
         self.rect.x = self.x
         self.rect.y = self.y
         self.collisions = []
@@ -117,31 +121,42 @@ class Player(ActorBase, GravityBound):
             if pygame.sprite.collide_rect(self, self.collider):
                 self.collisions.append(sprite)
     
-    def process_gravity(self, time):
-        gravity_manager = GravityManager.get_instance()
-        gravity = gravity_manager.get_gravity(self.gravity_region)
-        grav_amount = (gravity[0] * time, gravity[1] * time)
-        self.velocity[0] = self.velocity[0] + grav_amount[0]
-        self.velocity[1] = self.velocity[1] + grav_amount[1]
+    # def process_gravity(self, time):
+    #     gravity_manager = GravityManager.get_instance()
+    #     gravity = gravity_manager.get_gravity(self.gravity_region)
+    #     grav_amount = (gravity[0] * time, gravity[1] * time)
+    #     self.velocity[0] = self.velocity[0] + grav_amount[0]
+    #     self.velocity[1] = self.velocity[1] + grav_amount[1]
         
-        # logger.debug('velocity: {}'.format(self.velocity))
-        try:
-            if not self.in_world():
-                raise OffScreenException
-            else:
-                self.x = self.x + self.velocity[0]
-                self.y = self.y + self.velocity[1]
-                self.update(0)
-                # TODO: manage collisions
-        except:
-            pass
+    #     # logger.debug('velocity: {}'.format(self.velocity))
+    #     try:
+    #         if not self.in_world():
+    #             raise OffScreenException
+    #         else:
+    #             self.x = self.x + self.velocity[0]
+    #             self.y = self.y + self.velocity[1]
+    #             self.update(0)
+    #             # TODO: manage collisions
+    #     except:
+    #         pass
 
-        self.velocity = [0,0]
+    #     self.velocity = [0,0]
+
+    def process_gravity(self, time, gravity_vector):
+        # gravity_vector[0] = gravity_vector[0] * time
+        # gravity_vector[1] = gravity_vector[1] * time
+        gravity_vector = (gravity_vector[0] * time, gravity_vector[1] * time)
+
+        # Right now we ignore a horizontal gravity cause we can't handle
+        # it right now
+        # self.velocity[0] = self.velocity[0] + gravity_vector[0]
+        self.velocity[1] = self.velocity[1] + gravity_vector[1]
+
+    def get_gravity_name(self):
+        return self.gravity_region
 
     def get_image(self, vector):
-        IDLE_VECTOR = [0,0]
-        logger.debug(vector == IDLE_VECTOR)
-        if vector == IDLE_VECTOR:
+        if vector[0] == 0:
             self.image = self.sprite_manager.get_static_image(self.facing_left).convert_alpha()
         else:
             self.image = self.sprite_manager.get_walking_image(self.facing_left)
