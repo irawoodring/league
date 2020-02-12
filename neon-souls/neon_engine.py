@@ -80,7 +80,6 @@ class NeonEngine(Engine):
 
 
         if True in self.movement_inputs.values():
-            logger.debug('Move called')
             self.movement_function(self.game_delta_time, self.movement_inputs)
 
     def handle_physics(self):
