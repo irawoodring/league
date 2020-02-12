@@ -75,6 +75,11 @@ class Player(ActorBase, GravityBound):
         else:
             self.velocity[0] = 0
 
+        if True in inputs.values():
+            self.facing_left = self.velocity[0] < 0
+
+        self.get_image(self.velocity)
+
         try:
             if not self.in_world():
                 raise OffScreenException
@@ -83,15 +88,15 @@ class Player(ActorBase, GravityBound):
                 self.y = self.y + self.velocity[1]
                 self.update(0)
                 if len(self.collisions) > 0:
+                    logger.info(self.collisions[0].group()) # Statement is breaking collisions for some reason. How do i find out group? 
                     self.x = self.x - self.velocity[0]
                     self.y = self.y - self.velocity[1]
                     self.update(0)
                     self.collisions = []
-                # TODO: manage collisions (I think they're handled here anyway)
         except:
             pass
 
-        logger.debug('velocity: {}'.format(self.velocity))
+        # logger.debug('velocity: {}'.format(self.velocity))
         self.velocity = [0,0]
 
     def in_world(self):
@@ -119,7 +124,7 @@ class Player(ActorBase, GravityBound):
         self.velocity[0] = self.velocity[0] + grav_amount[0]
         self.velocity[1] = self.velocity[1] + grav_amount[1]
         
-        logger.debug('velocity: {}'.format(self.velocity))
+        # logger.debug('velocity: {}'.format(self.velocity))
         try:
             if not self.in_world():
                 raise OffScreenException
