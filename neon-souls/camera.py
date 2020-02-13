@@ -21,16 +21,17 @@ class SideScrollCamera:
         self.world_size = world_size
 
     def update(self, time):
-        print('x:', self.x)
-        print('player x: ',self.center_on.x)
-        print('adj pos:', (self.x + (self.width * .75)))
-        print('adj minus pos:', (self.x - (self.width * .9)))
-        if self.center_on.x > (self.x + (self.width * .75)) or self.center_on.x < (self.x - (self.width * .9)) :
-            if self.x < self.center_on.x:
-                self.x += (self.width * .02)
-            else:
-                self.x -= (self.width * .02)
-            offset_x = - self.x + (self.width * .01)
+        print('x:', round(self.x))
+        print('player x: ',round(self.center_on.x))
+        print('adj pos:', round(self.x + (self.width)))
+        print('adj minus pos:', round(self.x - self.width))
+        print('velocity:    ', round(self.center_on.velocity[0]))
+        if self.center_on.x > (self.x + (self.width)) or self.center_on.x < (self.x - (self.width)):
+            # if self.center_on.x > self.x:
+            self.x += round(self.center_on.velocity[0] * (self.width * .02))
+            # else:
+            #     self.x += round(self.center_on.velocity[0] * (self.width * .02))
+            offset_x = - (self.x - (self.width // 2))
 
             for d in self.drawables:
                 d.rect.x = d.x + offset_x
