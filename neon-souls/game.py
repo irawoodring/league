@@ -7,6 +7,7 @@ import league
 from background import Background
 from actors import Player
 from physics import GravityManager
+from camera import SideScrollCamera
 import neon_engine
 import json
 
@@ -26,8 +27,8 @@ def init_map(engine, player):
     engine.drawables.add(full_background)
     engine.drawables.add(background)
     world_size = (level1.wide*league.Settings.tile_size, level1.high*league.Settings.tile_size)
-    # cam = league.LessDumbCamera(400, 200, player, engine.drawables, world_size)
-    # engine.objects.append(cam)
+    cam = SideScrollCamera(200, 300, player, engine.drawables, world_size)
+    engine.objects.append(cam)
     player.world_size = world_size
     print(player.image)
     player.rect = player.image.get_rect()
