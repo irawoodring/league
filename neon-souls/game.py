@@ -19,10 +19,11 @@ def init_map(engine, player, gravity):
     """Create map and background"""
     league.Settings.tile_size = 16
     league.Settings.fill_color = (31, 38, 84)
+    league.Settings.tile_scale = 1.7
 
     sprites = league.Spritesheet('./assets/tileset-collapsed.png', league.Settings.tile_size, 14)
     level1 = league.Tilemap('./assets/level1.lvl', sprites, layer = 2)
-    engine.drawables.add(level1.passable.sprites()) 
+    engine.drawables.add(level1.passable.sprites())
     full_background = Background('./assets/skyline-a.png', 0)
     background = Background('./assets/buildings-bg.png', 1)
     engine.drawables.add(full_background)
@@ -31,7 +32,7 @@ def init_map(engine, player, gravity):
     cam = SideScrollCamera(200, 300, player, engine.drawables, world_size)
     engine.objects.append(cam)
     # Gravity must be appended first
-    # engine.objects.append(gravity)
+    engine.objects.append(gravity)
     player.world_size = world_size
     print(player.image)
     player.rect = player.image.get_rect()
