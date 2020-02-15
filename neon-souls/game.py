@@ -7,6 +7,7 @@ import league
 from background import Background
 from actors import Player
 from physics import GravityManager
+from projectiles import Projectile
 import neon_engine
 import json
 
@@ -52,6 +53,12 @@ def main():
     player_walking = player_sprites['walking_sprites']
 
     player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
+
+    projectile = Projectile(0,0)
+
+    engine.objects.append(projectile)
+
+    engine.drawables.add(projectile)
 
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
