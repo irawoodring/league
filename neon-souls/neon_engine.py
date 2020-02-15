@@ -9,13 +9,17 @@ logger = logging.getLogger('NeonEngine')
 
 class NeonEngine(Engine):
     MOVE_KEYS = (pygame.K_w, pygame.K_a, pygame.K_d)
+    ACTION_KEYS = (pygame.K_SPACE)
     BASE_MOVE_STATE = {'W': False, 'A': False, 'D': False, 'W_new': False }
+    BASE_ACTION_STATE = {'SPACE': False}
     def __init__(self, title):
         super().__init__(title)
 
         self.movement_inputs = deepcopy(self.BASE_MOVE_STATE)
         self.movement_function = None
         #self.checked_movement_inputs = False
+        self.action_inputs = deepcopy(self.BASE_ACTION_STATE)
+        self.action_function = None
         self.physics_functions = []
 
     # def run(self):
@@ -62,11 +66,14 @@ class NeonEngine(Engine):
 # Multi key press info came from https://stackoverflow.com/questions/37121511/can-i-press-two-keys-simultaneously-for-a-single-event-using-pygame
     def handle_inputs(self):
         self.movement_inputs = deepcopy(self.BASE_MOVE_STATE)
+        self.action_inputs = deepcopy(self.BASE_ACTION_STATE)
 
         keys_pressed = pygame.key.get_pressed()
         self.movement_inputs['W'] = bool(keys_pressed[pygame.K_w])
         self.movement_inputs['D'] = bool(keys_pressed[pygame.K_d])
         self.movement_inputs['A'] = bool(keys_pressed[pygame.K_a])
+
+        self.action_inputs['SPACE'] = bool(keys_pressed[pygame.K_SPACE])
 
         for event in pygame.event.get():
             # logger.debug(event)
@@ -79,3 +86,5 @@ class NeonEngine(Engine):
                     self.key_events[event.key](self.game_delta_time)
 
         self.movement_function(self.game_delta_time, self.movement_inputs)
+
+        self.action_function(self.action_inputs)

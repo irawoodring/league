@@ -7,7 +7,7 @@ import league
 from background import Background
 from actors import Player
 from physics import GravityManager
-from projectiles import Projectile
+from projectiles import Weapon
 import neon_engine
 import json
 
@@ -54,11 +54,7 @@ def main():
 
     player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
 
-    projectile = Projectile(0,0)
-
-    engine.objects.append(projectile)
-
-    engine.drawables.add(projectile)
+    gun = Weapon(player, engine)
 
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
@@ -70,6 +66,7 @@ def main():
 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
     engine.movement_function = player.move_player
+    engine.action_function = gun.fire 
     engine.physics_functions.append(player.process_gravity)
 
     engine.events[pygame.QUIT] = engine.stop
