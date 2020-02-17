@@ -9,7 +9,8 @@ from league import OffScreenException
 from league import Drawable
 from league import Settings
 from physics import GravityBound, GravityManager
-from .animation import WalkingAnimatedSprite 
+from .animation import WalkingAnimatedSprite
+from mechanics import Health
 
 import logging
 
@@ -59,6 +60,8 @@ class Player(ActorBase, GravityBound):
         self.sprite_manager = WalkingAnimatedSprite(static_image_path, walking_sprite_path)
         self.get_image([0,0])
         self.blocks = pygame.sprite.Group()
+
+        self.heath = Health(3, 1)
 
     def move_player(self, time, inputs):
         amount = self.speed * time
@@ -114,6 +117,9 @@ class Player(ActorBase, GravityBound):
             self.collider.rect.y = sprite.y
             if pygame.sprite.collide_rect(self, self.collider):
                 self.collisions.append(sprite)
+
+        if self.heath.at_zero():
+            pass # We'll do something later when we have finished. other sections 
     
     def process_gravity(self, time, gravity_vector):
         gravity_vector = (gravity_vector[0] * time, gravity_vector[1] * time)
