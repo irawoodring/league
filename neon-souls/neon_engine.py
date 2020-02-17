@@ -18,47 +18,6 @@ class NeonEngine(Engine):
         #self.checked_movement_inputs = False
         self.physics_functions = []
 
-    # def run(self):
-    #     """
-    #     The main game loop. This game loop overrides the original game loop to 
-    #     track physics state on objects during each iteration. 
-    #     """
-    #     self.running = True
-    #     while self.running:
-    #     # The time since the last check
-    #         now = pygame.time.get_ticks()
-    #         self.real_delta_time = now - self.last_checked_time
-    #         self.last_checked_time = now
-    #         self.game_delta_time = self.real_delta_time * (0.001 * Settings.gameTimeFactor)
-
-    #         # Wipe screen
-    #         self.screen.fill(Settings.fill_color)
-
-    #         self.handle_physics()
-
-    #         # Process inputs
-    #         self.handle_inputs()
-
-    #         # Update game world
-    #         # Each object must have an update(time) method
-    #         self.check_collisions()
-    #         for o in self.objects:
-    #             o.update(self.game_delta_time)
-
-    #         # Generate outputs
-    #         #d.update()
-    #         self.drawables.draw(self.screen)
-
-    #         # Show statistics?
-    #         if self.visible_statistics:
-    #             self.show_statistics()
-
-    #         # Could keep track of rectangles and update here, but eh.
-    #         pygame.display.flip()
-
-    #         # Frame limiting code
-    #         self.clock.tick(Settings.fps)
-
 # Multi key press info came from https://stackoverflow.com/questions/37121511/can-i-press-two-keys-simultaneously-for-a-single-event-using-pygame
     def handle_inputs(self):
         self.movement_inputs = deepcopy(self.BASE_MOVE_STATE)
