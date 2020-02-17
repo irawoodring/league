@@ -43,8 +43,21 @@ class ActorBase(Character, GravityBound):
         self.collider = Drawable()
         self.collider.image = pygame.Surface([Settings.tile_size, Settings.tile_size])
         self.collider.rect = self.collider.image.get_rect()
-        
+    
+    def handle_map_collisions(self):
+        for collision in self.collisions:
+            bot = bool(collision.rect.collidepoint(self.rect.midbottom))
+            top = bool(collision.rect.collidepoint(self.rect.midtop))
+            right = bool(collision.rect.collidepoint(self.rect.midright))
+            left = bool(collision.rect.collidepoint(self.rect.midleft))
 
+            # # stop on bot or top
+            self.velocity[1] = 0 if bot and self.velocity[1] > 0 else self.velocity[1]
+            self.velocity[1] = 0 if top and self.velocity[1] < 0 else self.velocity[1]
+            
+
+            self.velocity[0] = 0 if right and self.velocity[0] > 0 else self.velocity[0]
+            self.velocity[0] = 0 if left and self.velocity[0] < 0 else self.velocity[0]
 
 class Player(ActorBase, GravityBound):
     MAX_JUMP_VELOCITY = -10
@@ -52,7 +65,7 @@ class Player(ActorBase, GravityBound):
     def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0):
         super().__init__(None, image_size, z=z, x=x, y=y)
         self.velocity = [0,0]
-        self.gravity_vector = [0,0]
+        # self.gravity_vector = [0,0]
         self.speed = 200
         self.gravity_region = gravity_region
         self.facing_left = False
@@ -104,7 +117,6 @@ class Player(ActorBase, GravityBound):
         self.rect.x = self.x
         self.rect.y = self.y
         self.handle_map_collisions()
-        logger.info(self.velocity)
         
         self.x = self.x + self.velocity[0]
         self.y = self.y + self.velocity[1]
@@ -141,32 +153,32 @@ class Player(ActorBase, GravityBound):
         self.image = pygame.transform.scale(self.image, self.image_size)
         self.rect = self.image.get_rect()
     
-    def handle_map_collisions(self):
-        for collision in self.collisions:
-            bot = bool(collision.rect.collidepoint(self.rect.midbottom))
-            top = bool(collision.rect.collidepoint(self.rect.midtop))
-            right = bool(collision.rect.collidepoint(self.rect.midright))
-            left = bool(collision.rect.collidepoint(self.rect.midleft))
 
-            # # stop on bot or top
-            self.velocity[1] = 0 if bot and self.velocity[1] > 0 else self.velocity[1]
-            self.velocity[1] = 0 if top and self.velocity[1] < 0 else self.velocity[1]
-            
+class PatrolEnemy(ActorBase, GravityBound):
+    def __init__(self, static_path, walking_path, image_size, z=0, x=0, y=0, speed=100):
+        super().__init__(None, image_size, z=z, x=x, y=y)
+        self.velocity = [0,0]
+        self.speed = speed
+        self.facing_left = False
 
-            self.velocity[0] = 0 if right and self.velocity[0] > 0 else self.velocity[0]
-            self.velocity[0] = 0 if left and self.velocity[0] < 0 else self.velocity[0]
+        self.sprite_manager = WalkingAnimatedSprite(static_path, walking_path)
+        self.blocks = pygame.sprite.Group()
+
+    def update(self, deta_game_time):
+        # TODO: WHY DO RECT X AND Y COORDINATES GET RESET TO 0,0 EVERYTIME? 
+        # TODO: REMOVE AFTER EXPLANATION
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.handle_map_collisions()
         
+        self.x = self.x + self.velocity[0]
+        self.y = self.y + self.velocity[1]
+        self.rect.x = self.x
+        self.rect.y = self.y
 
-
-
-
-
-
-
-
-    
-
-
-    
-
-
+        self.collisions = []
+        for sprite in self.blocks:
+            self.collider.rect.x = sprite.x
+            self.collider.rect.y = sprite.y
+            if pygame.sprite.collide_rect(self, self.collider):
+                self.collisions.append(sprite)
