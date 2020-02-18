@@ -54,7 +54,7 @@ def main():
 
     player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
 
-    gun = Weapon(player, engine)
+    #gun = Weapon(player, engine)
 
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
@@ -66,7 +66,7 @@ def main():
 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
     engine.movement_function = player.move_player
-    engine.action_function = gun.fire 
+    #engine.action_function = gun.fire 
     engine.physics_functions.append(player.process_gravity)
 
     engine.events[pygame.QUIT] = engine.stop
