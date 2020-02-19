@@ -110,11 +110,8 @@ class Player(ActorBase, GravityBound):
         """
         return True
 
-   # Checks for collisions by comparing coordinates of self and iterative sprite in a certain group.
-    #TODO Explore the possibility that we may have more than one sprite group.
     def update(self, time):
-        # TODO: WHY DO RECT X AND Y COORDINATES GET RESET TO 0,0 EVERYTIME? 
-        # TODO: REMOVE AFTER EXPLANATION
+        # For some reason the rect object is position at 0,0 at the start of every update function.
         self.rect.x = self.x
         self.rect.y = self.y
         self.handle_map_collisions()
@@ -166,8 +163,7 @@ class PatrolEnemy(ActorBase, GravityBound):
         self.blocks = pygame.sprite.Group()
 
     def update(self, deta_game_time):
-        # TODO: WHY DO RECT X AND Y COORDINATES GET RESET TO 0,0 EVERYTIME? 
-        # TODO: REMOVE AFTER EXPLANATION
+        # For some reason the rect object is position at 0,0 at the start of every update function.
         self.rect.x = self.x
         self.rect.y = self.y
         self.handle_map_collisions()
