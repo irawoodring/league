@@ -108,7 +108,10 @@ class Tilemap:
                 num = int(j)
                 base_sprite = self.spritesheet.sprites[abs(num)]
                 sprite = Drawable(self.layer)
-                sprite.image = base_sprite.image
+                sprite.image = pygame.transform.scale(
+                    base_sprite.image, 
+                    (round(Settings.tile_size*Settings.tile_scale), round(Settings.tile_size*Settings.tile_scale))
+                )
                 # Set rectangle coords (using top-left coords here)
                 rect = sprite.image.get_rect() 
                 rect.x = x
