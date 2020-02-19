@@ -22,6 +22,7 @@ class Settings:
     width = 800
     height = 640
     tile_size = 32
+    tile_scale = 1
     gameTimeFactor = 1
     fill_color = (255, 255, 255)
     statistics_color = (0, 0, 0)
