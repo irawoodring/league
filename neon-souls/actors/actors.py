@@ -3,13 +3,14 @@ sys.path.append('../../')
 
 from abc import ABC
 import pygame
+import math
 
 from league import Character
 from league import OffScreenException
 from league import Drawable
 from league import Settings
 from physics import GravityBound, GravityManager
-from .animation import WalkingAnimatedSprite
+from .animation import WalkingAnimatedSprite, ConstantAnimatedSprite
 from mechanics import Health
 
 import logging
@@ -152,14 +153,16 @@ class Player(ActorBase, GravityBound):
         self.rect = self.image.get_rect()
     
 
-class PatrolEnemy(ActorBase, GravityBound):
-    def __init__(self, static_path, walking_path, image_size, z=0, x=0, y=0, speed=100):
+class SentinalEnemy(ActorBase, GravityBound):
+    def __init__(self, sprite_loader_path, player_instance, image_size, patrol_list, z=0, x=0, y=0, speed=100):
         super().__init__(None, image_size, z=z, x=x, y=y)
         self.velocity = [0,0]
         self.speed = speed
         self.facing_left = False
+        self.current_patrol_point = patrol_list[0]
+        self.player = player_instance
 
-        self.sprite_manager = WalkingAnimatedSprite(static_path, walking_path)
+        # self.sprite_manager = WalkingAnimatedSprite(static_path, walking_path)
         self.blocks = pygame.sprite.Group()
 
     def update(self, deta_game_time):
@@ -179,3 +182,16 @@ class PatrolEnemy(ActorBase, GravityBound):
             self.collider.rect.y = sprite.y
             if pygame.sprite.collide_rect(self, self.collider):
                 self.collisions.append(sprite)
+
+    def determine_move(self):
+        player_distance = self.get_distance(self.x, self.player.x, self.y, self.player.y)
+    
+        multiplier = -1 if self.current_patrol_point[0] < self.x else 0
+
+    def process_gravity(self, time, gravity_vector):
+        gravity_vector = (gravity_vector[0] * time, gravity_vector[1] * time)
+        self.velocity[1] = self.velocity[1] + gravity_vector[1]
+
+    def get_distance(x1, x2, y1, y2):
+        return math.sqrt(((x2-x1)**2) + ((y2 - y1)**2))
+

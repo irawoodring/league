@@ -59,6 +59,8 @@ def main():
 
     player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
 
+    
+
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
 
