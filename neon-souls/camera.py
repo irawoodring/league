@@ -1,44 +1,52 @@
-import csv
-import math
 import os
-import sys
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 
+import sys
 sys.path.append('../')
 import league
 
 
-class SideScrollCamera(league.UGameObject):
-
-    def __init__(self, width, height, center_on, drawables, world_size):
-        self.width = width
-        self.height = height
-        self.center_on = center_on
-        self.drawables = drawables
-        self.x = self.center_on.x
-        self.y = self.center_on.y
+class CameraUpdates(pygame.sprite.LayeredUpdates):
+    """
+    Modified from
+    https://stackoverflow.com/questions/14354171/add-scrolling-to-a-platformer-in-pygame/14357169#14357169
+    """
+    def __init__(self, target, world_size):
+        super().__init__()
+        self.target = target
+        self.cam = pygame.Vector2(0, 0)
         self.world_size = world_size
+        if self.target:
+            self.add(target)
 
-        # draw a window around the center to determine when to move the camera
-        self.window_left = self.center_on.x - (self.width * .15)
-        self.window_right = self.center_on.x + (self.width * .15)
+    def update(self, *args):
+        super().update(*args)
+        if self.target:
+            x = -self.target.rect.center[0] + league.Settings.width/2
+            y = -self.target.rect.center[1] + league.Settings.height/4 # less upward movement on the camera
+            if y < 0: # don't go under the floor
+                y = 0
+            self.cam += (pygame.Vector2((x, y)) - self.cam) * 0.05
+            self.cam.x = max(-(self.world_size[0]-league.Settings.width), min(0, self.cam.x))
 
-    def update(self, time):
-
-        if self.center_on.x - self.width // 2 > 0 and self.center_on.x + self.width // 2 < self.world_size[0] - 16 and \
-            self.center_on.x < self.window_left or \
-            self.center_on.x > self.window_right:
-            # self.x = self.center_on.x
-            # self.y = self.center_on.y
-            self.x += self.center_on.velocity[0] * (self.width * .05)
-
-            ## reset our movement "buffer"
-            self.window_left = self.center_on.x - (self.width * .15)
-            self.window_right = self.center_on.x + (self.width * .15)
-        offset_x = - (self.x - (self.width // 2))
-        
-        for d in self.drawables:
-            if hasattr(d, 'static'):
-                continue
-            d.rect.x = d.x + offset_x
+    def draw(self, surface):
+        spritedict = self.spritedict
+        surface_blit = surface.blit
+        dirty = self.lostsprites
+        self.lostsprites = []
+        dirty_append = dirty.append
+        init_rect = self._init_rect
+        for spr in self.sprites():
+            rec = spritedict[spr]
+            newrect = surface_blit(spr.image, spr.rect.move(self.cam))
+            if rec is init_rect:
+                dirty_append(newrect)
+            else:
+                if newrect.colliderect(rec):
+                    dirty_append(newrect.union(rec))
+                else:
+                    dirty_append(newrect)
+                    dirty_append(rec)
+            spritedict[spr] = newrect
+        return dirty       

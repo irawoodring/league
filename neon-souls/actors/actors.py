@@ -48,8 +48,9 @@ class ActorBase(Character, GravityBound):
 class Player(ActorBase, GravityBound):
     MAX_JUMP_VELOCITY = -10
     MAX_FALL_VELOCITY = 20
-    def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0):
+    def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0, layer=5):
         super().__init__(None, image_size, z=z, x=x, y=y)
+        self._layer = layer
         self.velocity = [0,0]
         self.gravity_vector = [0,0]
         self.speed = 200
