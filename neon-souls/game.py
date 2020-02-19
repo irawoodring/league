@@ -56,8 +56,9 @@ def main():
 
     player_static = player_sprites['static_sprites']
     player_walking = player_sprites['walking_sprites']
+    player_running = player_sprites['running_sprites']
 
-    player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
+    player = Player(player_static, player_walking, player_running, (128, 128), 'default', 2, 300, 400)
 
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
