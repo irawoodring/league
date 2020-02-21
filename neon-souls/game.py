@@ -44,6 +44,9 @@ def init_map(engine, player, gravity):
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
+    # add background music with map creation
+    pygame.mixer.music.load('assets/Blazer Rail.wav')
+    pygame.mixer.music.play(0, 0.0)
 
 
 def main():
@@ -64,7 +67,7 @@ def main():
 
     gravity_manager.add_object(player)
     
-    # create background and level
+    # create background and level and start background music
     init_map(engine, player, gravity_manager)
 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)

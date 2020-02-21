@@ -16,7 +16,7 @@ import logging
 
 logger = logging.getLogger('Player')
 
-class ActorBase(Character, GravityBound):
+class ActorBase(Character):
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
         super().__init__(z=z, x=x, y=y)
 
@@ -97,7 +97,6 @@ class Player(ActorBase, GravityBound):
         """
         return True
 
-   # Checks for collisions by comparing coordinates of self and iterative sprite in a certain group.
     #TODO Explore the possibility that we may have more than one sprite group.
     def update(self, time):
         # TODO: WHY DO RECT X AND Y COORDINATES GET RESET TO 0,0 EVERYTIME? 
