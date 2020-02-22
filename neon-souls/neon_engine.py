@@ -18,7 +18,7 @@ class NeonEngine(Engine):
         #self.checked_movement_inputs = False
         self.physics_functions = []
 
-# Multi key press info came from https://stackoverflow.com/questions/37121511/can-i-press-two-keys-simultaneously-for-a-single-event-using-pygame
+    # Multi key press info came from https://stackoverflow.com/questions/37121511/can-i-press-two-keys-simultaneously-for-a-single-event-using-pygame
     def handle_inputs(self):
         self.movement_inputs = deepcopy(self.BASE_MOVE_STATE)
 
