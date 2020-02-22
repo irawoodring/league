@@ -16,7 +16,7 @@ import logging
 
 logger = logging.getLogger('Player')
 
-class ActorBase(Character):
+class ActorBase(Character, GravityBound):
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
         super().__init__(z=z, x=x, y=y)
 
@@ -62,9 +62,8 @@ class ActorBase(Character):
 class Player(ActorBase, GravityBound):
     MAX_JUMP_VELOCITY = -10
     MAX_FALL_VELOCITY = 20
-    def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0, layer=5):
+    def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0):
         super().__init__(None, image_size, z=z, x=x, y=y)
-        self._layer = layer
         self.velocity = [0,0]
         # self.gravity_vector = [0,0]
         self.speed = 200
@@ -110,6 +109,7 @@ class Player(ActorBase, GravityBound):
         """
         return True
 
+   # Checks for collisions by comparing coordinates of self and iterative sprite in a certain group.
     #TODO Explore the possibility that we may have more than one sprite group.
     def update(self, time):
         # TODO: WHY DO RECT X AND Y COORDINATES GET RESET TO 0,0 EVERYTIME? 
