@@ -73,12 +73,6 @@ def main():
     # create background and level
     init_map(engine, player, gravity_manager)
 
-    #pr = Projectile(330, 500)
-
-    #engine.objects.append(pr)
-
-    #engine.drawables.add(pr)
-
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
     engine.movement_function = player.move_player
     engine.action_function = fire

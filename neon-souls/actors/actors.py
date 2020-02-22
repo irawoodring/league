@@ -164,19 +164,20 @@ class Projectile(ActorBase):
     IMAGE_PATH = './assets/shot-2.png'
     def __init__(self, x, y, facing_left, image_path=IMAGE_PATH):
         
-        super().__init__(image_path, (20,20), x, y)
+        super().__init__(image_path, (15,11), x, y)
         self._layer = 50
-        self.image = pygame.image.load(image_path)
-        self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.facing_left = facing_left
 
+        if(self.facing_left): 
+            self.image = pygame.transform.flip(self.image, True, False)
+
     def update(self, time):
         if( self.facing_left ):
-            self.rect.x = self.rect.x - 10
+            self.rect.x = self.rect.x - 8
         else:
-            self.rect.x = self.rect.x + 10
+            self.rect.x = self.rect.x + 8
 
     
 
