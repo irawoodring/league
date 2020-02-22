@@ -51,6 +51,8 @@ def fire(Neon_Engine, inputs):
             pr = Neon_Engine.objects[2].loadBullet()
             Neon_Engine.objects.append(pr)
             Neon_Engine.drawables.add(pr)
+            pew = pygame.mixer.Sound('assets/scifi_weap.mp3')
+            pew.play()
 
 def main():
     engine = neon_engine.NeonEngine('Neon Souls')
