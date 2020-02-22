@@ -46,7 +46,7 @@ def init_map(engine, player, gravity):
     engine.drawables.add(player)
     # add background music with map creation
     pygame.mixer.music.load('assets/Blazer Rail.wav')
-    pygame.mixer.music.play(0, 0.0)
+    pygame.mixer.music.play(-1, 0.0)
 
 
 def main():
