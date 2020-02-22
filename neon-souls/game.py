@@ -48,7 +48,7 @@ def init_map(engine, player, gravity):
     
 def fire(Neon_Engine, inputs):
         if inputs['SPACE'] is True:
-            pr = Projectile(330, 500)
+            pr = Neon_Engine.objects[2].loadBullet()
             Neon_Engine.objects.append(pr)
             Neon_Engine.drawables.add(pr)
 

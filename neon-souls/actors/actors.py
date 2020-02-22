@@ -156,9 +156,13 @@ class Player(ActorBase, GravityBound):
             self.velocity[0] = 0 if right and self.velocity[0] > 0 else self.velocity[0]
             self.velocity[0] = 0 if left and self.velocity[0] < 0 else self.velocity[0]
         
+    def loadBullet(self):
+
+        return Projectile(self.x + 55, self.y+50, self.facing_left)
+
 class Projectile(ActorBase):
     IMAGE_PATH = './assets/shot-2.png'
-    def __init__(self, x, y, image_path=IMAGE_PATH):
+    def __init__(self, x, y, facing_left, image_path=IMAGE_PATH):
         
         super().__init__(image_path, (20,20), x, y)
         self._layer = 50
@@ -166,9 +170,13 @@ class Projectile(ActorBase):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.facing_left = facing_left
 
     def update(self, time):
-        self.rect.x = self.rect.x + 10
+        if( self.facing_left ):
+            self.rect.x = self.rect.x - 10
+        else:
+            self.rect.x = self.rect.x + 10
 
     
 
