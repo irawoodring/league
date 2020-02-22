@@ -105,7 +105,6 @@ class Player(ActorBase, GravityBound):
         self.rect.x = self.x
         self.rect.y = self.y
         self.handle_map_collisions()
-        logger.info(self.velocity)
         
         self.x = self.x + self.velocity[0]
         self.y = self.y + self.velocity[1]
@@ -157,8 +156,24 @@ class Player(ActorBase, GravityBound):
             self.velocity[0] = 0 if right and self.velocity[0] > 0 else self.velocity[0]
             self.velocity[0] = 0 if left and self.velocity[0] < 0 else self.velocity[0]
         
+class Projectile(ActorBase):
+    IMAGE_PATH = './assets/shot-2.png'
+    def __init__(self, x, y, image_path=IMAGE_PATH):
+        
+        super().__init__(image_path, (20,20), x, y)
+        self._layer = 50
+        self.image = pygame.image.load(image_path)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
+    def update(self, time):
+        self.rect.x = self.rect.x + 10
 
+    
+
+    def process_gravity(self):
+        pass
 
 
 

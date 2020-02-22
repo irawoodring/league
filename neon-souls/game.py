@@ -6,8 +6,8 @@ sys.path.append('../')
 import league
 from background import Background
 from actors import Player
+from actors import Projectile
 from physics import GravityManager
-from projectiles import Weapon
 from camera import CameraUpdates
 import neon_engine
 import json
@@ -45,7 +45,12 @@ def init_map(engine, player, gravity):
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
-
+    
+def fire(Neon_Engine, inputs):
+        if inputs['SPACE'] is True:
+            pr = Projectile(330, 500)
+            Neon_Engine.objects.append(pr)
+            Neon_Engine.drawables.add(pr)
 
 def main():
     engine = neon_engine.NeonEngine('Neon Souls')
@@ -60,8 +65,6 @@ def main():
 
     player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
 
-    #gun = Weapon(player, engine)
-
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
 
@@ -70,13 +73,21 @@ def main():
     # create background and level
     init_map(engine, player, gravity_manager)
 
+    #pr = Projectile(330, 500)
+
+    #engine.objects.append(pr)
+
+    #engine.drawables.add(pr)
+
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
     engine.movement_function = player.move_player
-    #engine.action_function = gun.fire 
+    engine.action_function = fire
     engine.physics_functions.append(player.process_gravity)
 
     engine.events[pygame.QUIT] = engine.stop
     engine.run()
+
+    
 
 if __name__=='__main__':
     league.logger_init()
