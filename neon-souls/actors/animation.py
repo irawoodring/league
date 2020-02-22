@@ -3,7 +3,9 @@ import pygame
 
 class AnimatedSpriteBase:
     def __init__(self, static_image_path):
-        self.static_image = pygame.image.load(static_image_path)
+
+        if static_image_path is not None:
+            self.static_image = pygame.image.load(static_image_path)
 
     def get_static_image(self, reversed=False):
         if reversed:
@@ -13,7 +15,7 @@ class AnimatedSpriteBase:
 
 class ConstantAnimatedSprite(AnimatedSpriteBase):
     def __init__(self, sprite_loader_path):
-        super().__init__(self, None)
+        super().__init__(None)
         
         self.index = 0
         self.image_rotation = tuple([pygame.image.load(sprite) for sprite in sprite_loader_path])

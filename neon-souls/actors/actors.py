@@ -153,14 +153,17 @@ class Player(ActorBase, GravityBound):
     
 
 class SentinalEnemy(ActorBase, GravityBound):
-    def __init__(self, sprite_loader_path, player_instance, image_size, patrol_list, z=0, x=0, y=0, speed=100):
+    def __init__(self, sprite_loader_path, player_instance, image_size, patrol_list, z=0, x=0, y=0, speed=100, layer=5):
         super().__init__(None, image_size, z=z, x=x, y=y)
+        self._layer = layer
         self.velocity = [0,0]
         self.speed = speed
         self.facing_left = False
         self.current_patrol_point = patrol_list[0]
         self.player = player_instance
-
+        
+        self.sprite_manager = ConstantAnimatedSprite(sprite_loader_path)
+        self.image = self.sprite_manager.get_sprite(self.facing_left)
         # self.sprite_manager = WalkingAnimatedSprite(static_path, walking_path)
         self.blocks = pygame.sprite.Group()
 
@@ -168,7 +171,7 @@ class SentinalEnemy(ActorBase, GravityBound):
         # For some reason the rect object is position at 0,0 at the start of every update function.
         self.rect.x = self.x
         self.rect.y = self.y
-        self.handle_map_collisions()
+        # self.handle_map_collisions()
         
         self.x = self.x + self.velocity[0]
         self.y = self.y + self.velocity[1]
@@ -191,6 +194,6 @@ class SentinalEnemy(ActorBase, GravityBound):
         gravity_vector = (gravity_vector[0] * time, gravity_vector[1] * time)
         self.velocity[1] = self.velocity[1] + gravity_vector[1]
 
-    def get_distance(x1, x2, y1, y2):
-        return math.sqrt(((x2-x1)**2) + ((y2 - y1)**2))
+    # def get_distance(x1, x2, y1, y2):
+    #     return math.sqrt(((x2-x1)**2) + ((y2 - y1)**2))
 
