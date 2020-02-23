@@ -62,7 +62,7 @@ class Player(ActorBase, GravityBound):
         self.get_image([0,0])
         self.blocks = pygame.sprite.Group()
 
-        self.heath = Health(3, 1)
+        self.health = Health(3, 1)
 
     def move_player(self, time, inputs):
         amount = self.speed * time

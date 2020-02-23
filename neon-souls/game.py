@@ -8,8 +8,10 @@ from background import Background
 from actors import Player
 from physics import GravityManager
 from camera import CameraUpdates
+from health_item import HealthItem
 import neon_engine
 import json
+import random
 
 
 """
@@ -36,6 +38,7 @@ def init_map(engine, player, gravity):
     engine.drawables.add(full_background)
     engine.drawables.add(background)
     engine.drawables.add(level1.passable.sprites())
+    place_random_items(engine, world_size, player)
 
     # Gravity must be appended first
     engine.objects.append(gravity)
@@ -44,6 +47,13 @@ def init_map(engine, player, gravity):
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
+
+def place_random_items(engine, level_size, player):
+    for x in range(0, 10):
+        x = random.randrange(0, level_size[0])
+        item = HealthItem('./assets/banner-big-1.png', x, 300, player)
+        engine.drawables.add(item)
+        engine.objects.add(item)
 
 
 def main():
