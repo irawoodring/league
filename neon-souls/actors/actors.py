@@ -63,10 +63,10 @@ class ActorBase(Character):
 class Player(ActorBase, GravityBound):
     MAX_JUMP_VELOCITY = -10
     MAX_FALL_VELOCITY = 20
-    def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0):
+    def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0, layer=5):
         super().__init__(None, image_size, z=z, x=x, y=y)
+        self._layer = layer
         self.velocity = [0,0]
-        # self.gravity_vector = [0,0]
         self.speed = 200
         self.gravity_region = gravity_region
         self.facing_left = False
@@ -121,7 +121,7 @@ class Player(ActorBase, GravityBound):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.collisions = []
+        # self.collisions = []
         for sprite in self.blocks:
             self.collider.rect.x = sprite.x
             self.collider.rect.y = sprite.y
@@ -181,8 +181,6 @@ class SentinalEnemy(ActorBase):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.facing_left = True if self.velocity[0] < 0 else False
-        
         # self.collisions = []
         # for sprite in self.blocks:
         #     self.collider.rect.x = sprite.x
@@ -206,7 +204,6 @@ class SentinalEnemy(ActorBase):
     
     def update_patrol_point(self):
         dist_from_x = self.current_patrol_point[0] - self.x
-        logger.info(self.patrol_index)
         if abs(dist_from_x) < 25:
             self.patrol_index = (self.patrol_index + 1) % len(self.patrol_list)
             self.current_patrol_point = self.patrol_list[self.patrol_index]

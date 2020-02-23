@@ -5,6 +5,7 @@ import sys
 sys.path.append('../')
 import league
 from background import Background
+from camera import CameraUpdates
 from actors import Player, SentinalEnemy
 from physics import GravityManager
 import neon_engine
@@ -18,31 +19,37 @@ def init_map(engine, player, gravity, enemy_list):
     """Create map and background"""
     league.Settings.tile_size = 16
     league.Settings.fill_color = (31, 38, 84)
+    # league.Settings.tile_scale = 1.7
 
     sprites = league.Spritesheet('./assets/tileset-collapsed.png', league.Settings.tile_size, 14)
     level1 = league.Tilemap('./assets/level1.lvl', sprites, layer = 2)
-    engine.drawables.add(level1.passable.sprites()) 
+    world_size = (level1.wide*league.Settings.tile_size, level1.high*league.Settings.tile_size)
+    
+    # initialize camera
+    cam = CameraUpdates(player, world_size)
+    engine.objects.append(cam)
+    engine.drawables = cam # allow camera to override draw()
+
+    # add in background and level1
     full_background = Background('./assets/skyline-a.png', 0)
     background = Background('./assets/buildings-bg.png', 1)
     engine.drawables.add(full_background)
     engine.drawables.add(background)
-    world_size = (level1.wide*league.Settings.tile_size, level1.high*league.Settings.tile_size)
+    engine.drawables.add(level1.passable.sprites())
 
-    # cam = league.LessDumbCamera(400, 200, player, engine.drawables, world_size)
-    # engine.objects.append(cam)
+
 
     # Gravity must be appended first
     engine.objects.append(gravity)
     player.world_size = world_size
-    print(player.image)
     player.rect = player.image.get_rect()
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
 
     # add background music with map creation
-    pygame.mixer.music.load('assets/Blazer Rail.wav')
-    pygame.mixer.music.play(-1, 0.0)
+    # pygame.mixer.music.load('assets/Blazer Rail.wav')
+    # pygame.mixer.music.play(-1, 0.0)
 
     for enemy in enemy_list:
         enemy.world_size = world_size
