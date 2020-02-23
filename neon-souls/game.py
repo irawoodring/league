@@ -6,7 +6,7 @@ sys.path.append('../')
 import league
 from background import Background
 from camera import CameraUpdates
-from health_item import HealthItem
+from items.health_item import HealthItem
 from actors import Player, SentinalEnemy
 from physics import GravityManager
 import neon_engine
@@ -61,13 +61,12 @@ def init_map(engine, player, gravity, enemy_list):
 
 def place_random_items(engine, level_size, player):
     engine.collisions[player] = []
-    for i in range(0, 5):
-        x = random.randrange(level_size[0] // 2, level_size[0])
-        print(x)
+    for i in range(1, 5):
+        x = random.randrange(0, level_size[0] // i)
         item = HealthItem('./assets/health-item.png', x, level_size[1])
         engine.drawables.add(item)
         engine.objects.append(item)
-        engine.collisions[player].append((item, item.heal))
+        engine.collisions[player].append((item, item.grab))
 
 def main():
     engine = neon_engine.NeonEngine('Neon Souls')

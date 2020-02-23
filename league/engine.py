@@ -105,12 +105,8 @@ class Engine:
     # i collides with the sprite in the tuple, call the function in the
     # tuple.
     def check_collisions(self):
-        # for i in self.collisions.keys():
-        #     if pygame.sprite.collide_rect(i, self.collisions[i][0]):
-        #         self.collisions[i][1](i)
         for i in self.collisions.keys():
             for item in self.collisions[i]:
-                print(i.rect, item[0].rect)
                 if pygame.sprite.collide_rect(i, item[0]):
                     item[1](i) # what are you colliding into?
 

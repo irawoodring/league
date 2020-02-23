@@ -1,8 +1,12 @@
-import league
+"""A Generic Item"""
+import os
+import sys
 import pygame
-from mechanics.health import Health
 
-class HealthItem(league.DUGameObject):
+sys.path.append('..')
+from league import DUGameObject
+
+class Item(DUGameObject):
     def __init__(self, image_path, x, y, layer=3):
         super().__init__(self)
         self._layer = layer
@@ -15,15 +19,11 @@ class HealthItem(league.DUGameObject):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.heal_amount = 10
         self.top = self.y - 3
         self.animating_up = False
 
-    def heal(self, player):
-        player.health.gain_health(self.heal_amount)
-        effect = pygame.mixer.Sound('./assets/health-sound.wav')
-        effect.play()
-        self.kill()
+    def grab(self, player):
+        pass
 
     def update(self, delta_time):
         if not self.alive():
