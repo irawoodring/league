@@ -45,18 +45,20 @@ def init_map(engine, player, gravity):
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
-
+    
     # add background music with map creation
     pygame.mixer.music.load('assets/Blazer Rail.wav')
-    pygame.mixer.music.play(0, 0.0)
+    pygame.mixer.music.play(-1, 0.0)
     
 def fire(Neon_Engine, inputs):
         if inputs['SPACE'] is True:
             pr = Neon_Engine.objects[2].loadBullet()
             Neon_Engine.objects.append(pr)
             Neon_Engine.drawables.add(pr)
-    
-
+            # Sound effect added from
+            # https://www.zapsplat.com/music/science-fiction-weapon-gun-shoot-powerful-2/
+            pew = pygame.mixer.Sound('assets/scifi_weap.mp3')
+            pew.play()
 
 def main():
     engine = neon_engine.NeonEngine('Neon Souls')
