@@ -15,9 +15,9 @@ from mechanics import Health
 
 import logging
 
-logger = logging.getLogger('Player')
+logger = logging.getLogger('actor')
 
-class ActorBase(Character, GravityBound):
+class ActorBase(Character):
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
         super().__init__(z=z, x=x, y=y)
 
@@ -152,48 +152,67 @@ class Player(ActorBase, GravityBound):
         self.rect = self.image.get_rect()
     
 
-class SentinalEnemy(ActorBase, GravityBound):
+class SentinalEnemy(ActorBase):
     def __init__(self, sprite_loader_path, player_instance, image_size, patrol_list, z=0, x=0, y=0, speed=100, layer=5):
         super().__init__(None, image_size, z=z, x=x, y=y)
         self._layer = layer
         self.velocity = [0,0]
         self.speed = speed
         self.facing_left = False
+
+        self.patrol_list = patrol_list
         self.current_patrol_point = patrol_list[0]
+        self.patrol_index = 0
         self.player = player_instance
         
         self.sprite_manager = ConstantAnimatedSprite(sprite_loader_path)
         self.image = self.sprite_manager.get_sprite(self.facing_left)
-        # self.sprite_manager = WalkingAnimatedSprite(static_path, walking_path)
         self.blocks = pygame.sprite.Group()
 
     def update(self, deta_game_time):
         # For some reason the rect object is position at 0,0 at the start of every update function.
         self.rect.x = self.x
         self.rect.y = self.y
-        # self.handle_map_collisions()
-        
+        self.determine_move(deta_game_time)
+        self.get_image(self.velocity)
+
         self.x = self.x + self.velocity[0]
         self.y = self.y + self.velocity[1]
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.collisions = []
-        for sprite in self.blocks:
-            self.collider.rect.x = sprite.x
-            self.collider.rect.y = sprite.y
-            if pygame.sprite.collide_rect(self, self.collider):
-                self.collisions.append(sprite)
+        self.facing_left = True if self.velocity[0] < 0 else False
+        
+        # self.collisions = []
+        # for sprite in self.blocks:
+        #     self.collider.rect.x = sprite.x
+        #     self.collider.rect.y = sprite.y
+        #     if pygame.sprite.collide_rect(self, self.collider):
+        #         self.collisions.append(sprite)
 
-    def determine_move(self):
-        player_distance = self.get_distance(self.x, self.player.x, self.y, self.player.y)
+    def determine_move(self, delta_game_time):
+        # player_distance = SentinalEnemy.get_distance(self.x, self.player.x, self.y, self.player.y)
+        self.update_patrol_point()
+        dist_from_x = self.current_patrol_point[0] - self.x
+        if dist_from_x < 0:
+            amount = -self.speed * delta_game_time
+            self.velocity = [amount, 0]
+        else:
+            amount = self.speed * delta_game_time
+            self.velocity = [amount, 0]
+
+    def get_distance(x1, x2, y1, y2):
+        return math.sqrt(((x2-x1)**2) + ((y2 - y1)**2))
     
-        multiplier = -1 if self.current_patrol_point[0] < self.x else 0
+    def update_patrol_point(self):
+        dist_from_x = self.current_patrol_point[0] - self.x
+        logger.info(self.patrol_index)
+        if abs(dist_from_x) < 25:
+            self.patrol_index = (self.patrol_index + 1) % len(self.patrol_list)
+            self.current_patrol_point = self.patrol_list[self.patrol_index]
 
-    def process_gravity(self, time, gravity_vector):
-        gravity_vector = (gravity_vector[0] * time, gravity_vector[1] * time)
-        self.velocity[1] = self.velocity[1] + gravity_vector[1]
-
-    # def get_distance(x1, x2, y1, y2):
-    #     return math.sqrt(((x2-x1)**2) + ((y2 - y1)**2))
-
+    def get_image(self, vector):
+        self.facing_left = True if self.velocity[0] < 0 else False
+        self.image = self.sprite_manager.get_sprite(self.facing_left)
+        self.image = pygame.transform.scale(self.image, self.image_size)
+        self.rect = self.image.get_rect()
