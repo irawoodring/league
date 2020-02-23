@@ -40,6 +40,10 @@ def init_map(engine, player, gravity, enemy_list):
     engine.objects.append(player)
     engine.drawables.add(player)
 
+    # add background music with map creation
+    pygame.mixer.music.load('assets/Blazer Rail.wav')
+    pygame.mixer.music.play(-1, 0.0)
+
     for enemy in enemy_list:
         enemy.world_size = world_size
         enemy.rect = enemy.image.get_rect()
