@@ -33,7 +33,7 @@ class Item(DUGameObject):
 
     def update(self, delta_time):
         """Create bouncing animation and correctly set rect for collision
-
+        
         Args:
             delta_time (float): time to adjust for when calculating frames/movement
         """

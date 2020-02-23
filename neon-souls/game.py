@@ -9,6 +9,7 @@ from camera import CameraUpdates
 from items.health_item import HealthItem
 from actors import Player, SentinalEnemy
 from physics import GravityManager
+from flag import Flag
 import neon_engine
 import json
 import random
@@ -30,7 +31,7 @@ def init_map(engine, player, gravity, enemy_list):
     param - enemy_list: A list of enemey objects that are in this game instance.
     """
     league.Settings.tile_size = 16
-    league.Settings.fill_color = (31, 38, 84)
+    league.Settings.fill_color = (0, 0, 60)
     # league.Settings.tile_scale = 1.7
 
     sprites = league.Spritesheet('./assets/tileset-collapsed.png', league.Settings.tile_size, 14)
@@ -43,19 +44,29 @@ def init_map(engine, player, gravity, enemy_list):
     engine.drawables = cam # allow camera to override draw()
 
     # add in background and level1
-    full_background = Background('./assets/skyline-a.png', 0)
-    background = Background('./assets/buildings-bg.png', 1)
-    engine.drawables.add(full_background)
-    engine.drawables.add(background)
+    index = 0
+    while index < world_size[0]:
+        full_background = Background('./assets/skyline-a.png', x=index, layer=0)
+        background = Background('./assets/buildings-bg.png', x=index, layer=1)
+        engine.drawables.add(full_background)
+        engine.drawables.add(background)
+        index += league.Settings.width
     engine.drawables.add(level1.passable.sprites())
 
     # Gravity must be appended first
     engine.objects.append(gravity)
     player.world_size = world_size
     player.blocks.add(level1.impassable)
+
+    engine.collisions[player] = []
     engine.objects.append(player)
     engine.drawables.add(player)
     place_random_items(engine, world_size, player)
+
+    flag = Flag(world_size[0] - (league.Settings.tile_size * 10), world_size[1])
+    engine.collisions[player].append((flag, flag.win))
+    engine.objects.append(flag)
+    engine.drawables.add(flag)
 
     # add background music with map creation
     ### MUSIC IS BROKEN
@@ -71,9 +82,9 @@ def init_map(engine, player, gravity, enemy_list):
 
 
 def place_random_items(engine, level_size, player):
-    engine.collisions[player] = []
-    for i in range(1, 5):
-        x = random.randrange(0, level_size[0] // i)
+    rand_start = level_size[0] // 4
+    for i in range(2, 6):
+        x = random.randrange(rand_start, rand_start * i)
         item = HealthItem(x, level_size[1])
         engine.drawables.add(item)
         engine.objects.append(item)

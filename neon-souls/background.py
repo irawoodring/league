@@ -7,7 +7,7 @@ class Background(league.DGameObject):
     Instead we need to insert a custom background underneth the main map. This
     class facilitates that. 
     """
-    def __init__(self, image_path, layer=0):
+    def __init__(self, image_path, x=0, layer=0):
         """
         Inits background sprite
 
@@ -19,8 +19,8 @@ class Background(league.DGameObject):
         self.image = pygame.image.load(image_path).convert_alpha()
         self.image = pygame.transform.scale(self.image, (league.Settings.width, league.Settings.height))
         self.rect = self.image.get_rect()
-        self.x = 0
+        self.x = x
         self.y = 0
-        self.rect.x = 000
+        self.rect.x = x
         self.rect.y = 0
         self.static = True
