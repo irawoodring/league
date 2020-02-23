@@ -14,9 +14,19 @@ import json
 
 """
 Copied and modified from example.
+game.py initalizes the game and all the objects needed for the game.
 """
+
 def init_map(engine, player, gravity, enemy_list):
-    """Create map and background"""
+    """
+    Loads up all the assets for the game map and 
+    background sprites. Updates actors to hold world data. Does an inital render
+    of all game objects.
+
+    param - engine: The engine being used for this game instance
+    param - player: The player being used for this game instance
+    param - enemy_list: A list of enemey objects that are in this game instance.
+    """
     league.Settings.tile_size = 16
     league.Settings.fill_color = (31, 38, 84)
     # league.Settings.tile_scale = 1.7
@@ -37,8 +47,6 @@ def init_map(engine, player, gravity, enemy_list):
     engine.drawables.add(background)
     engine.drawables.add(level1.passable.sprites())
 
-
-
     # Gravity must be appended first
     engine.objects.append(gravity)
     player.world_size = world_size
@@ -48,6 +56,7 @@ def init_map(engine, player, gravity, enemy_list):
     engine.drawables.add(player)
 
     # add background music with map creation
+    ### MUSIC IS BROKEN
     # pygame.mixer.music.load('assets/Blazer Rail.wav')
     # pygame.mixer.music.play(-1, 0.0)
 
@@ -59,6 +68,13 @@ def init_map(engine, player, gravity, enemy_list):
         engine.drawables.add(enemy)
 
 def main():
+    """
+    Sets up all the relevent object needed to run the game. This includes the 
+    game engine, player, and all enemies in the game. The player and enemies load
+    thier sprites from a list of paths in a json file that is loaded and referenced
+    in a dict at the start. Once initalization finishes the game loop is run until
+    the user exits. 
+    """
     engine = neon_engine.NeonEngine('Neon Souls')
     
     engine.init_pygame()
@@ -95,6 +111,9 @@ def main():
     engine.events[pygame.QUIT] = engine.stop
     engine.run()
 
+
+
+#void main(int argc, char* argv[])...
 if __name__=='__main__':
     league.logger_init()
     main()
