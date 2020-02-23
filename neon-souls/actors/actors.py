@@ -267,6 +267,8 @@ class SentinalEnemy(ActorBase):
         self.patrol_list = patrol_list
         self.current_patrol_point = patrol_list[0]
         self.patrol_index = 0
+
+        self.rerender = True
         
         self.sprite_manager = ConstantAnimatedSprite(sprite_loader_path)
         self.image = self.sprite_manager.get_sprite(self.facing_left)
@@ -283,7 +285,10 @@ class SentinalEnemy(ActorBase):
         self.rect.x = self.x
         self.rect.y = self.y
         self.determine_move(deta_game_time)
-        self.get_image(self.velocity)
+        if self.rerender:
+            self.get_image(self.velocity)
+
+        self.rerender = not self.rerender
 
         self.x = self.x + self.velocity[0]
         self.y = self.y + self.velocity[1]
@@ -297,7 +302,6 @@ class SentinalEnemy(ActorBase):
         patrol points on the same plane so patrol points with a y component 
         will not be respected.       
         """
-        logger.info(self.current_patrol_point)
         self.update_patrol_point()
         dist_from_x = self.current_patrol_point[0] - self.x
         if dist_from_x < 0:
