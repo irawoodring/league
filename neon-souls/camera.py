@@ -50,3 +50,4 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
                     dirty_append(rec)
             spritedict[spr] = newrect
         return dirty       
+        

@@ -5,10 +5,10 @@ import sys
 sys.path.append('../')
 import league
 from background import Background
-from actors import Player
-from physics import GravityManager
 from camera import CameraUpdates
 from health_item import HealthItem
+from actors import Player, SentinalEnemy
+from physics import GravityManager
 import neon_engine
 import json
 import random
@@ -17,7 +17,7 @@ import random
 """
 Copied and modified from example.
 """
-def init_map(engine, player, gravity):
+def init_map(engine, player, gravity, enemy_list):
     """Create map and background"""
     league.Settings.tile_size = 16
     league.Settings.fill_color = (31, 38, 84)
@@ -26,7 +26,7 @@ def init_map(engine, player, gravity):
     sprites = league.Spritesheet('./assets/tileset-collapsed.png', league.Settings.tile_size, 14)
     level1 = league.Tilemap('./assets/level1.lvl', sprites, layer = 2)
     world_size = (level1.wide*league.Settings.tile_size, level1.high*league.Settings.tile_size)
-    
+
     # initialize camera
     cam = CameraUpdates(player, world_size)
     engine.objects.append(cam)
@@ -38,23 +38,36 @@ def init_map(engine, player, gravity):
     engine.drawables.add(full_background)
     engine.drawables.add(background)
     engine.drawables.add(level1.passable.sprites())
-    place_random_items(engine, world_size, player)
 
     # Gravity must be appended first
     engine.objects.append(gravity)
     player.world_size = world_size
-    player.rect = player.image.get_rect()
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
+    place_random_items(engine, world_size, player)
+
+    # add background music with map creation
+    # pygame.mixer.music.load('assets/Blazer Rail.wav')
+    # pygame.mixer.music.play(-1, 0.0)
+
+    for enemy in enemy_list:
+        enemy.world_size = world_size
+        enemy.rect = enemy.image.get_rect()
+        enemy.blocks.add(level1.impassable)
+        engine.objects.append(enemy)
+        engine.drawables.add(enemy)
+
 
 def place_random_items(engine, level_size, player):
-    for x in range(0, 10):
-        x = random.randrange(0, level_size[0])
-        item = HealthItem('./assets/banner-big-1.png', x, 300, player)
+    engine.collisions[player] = []
+    for i in range(0, 5):
+        x = random.randrange(level_size[0] // 2, level_size[0])
+        print(x)
+        item = HealthItem('./assets/health-item.png', x, level_size[1])
         engine.drawables.add(item)
-        engine.objects.add(item)
-
+        engine.objects.append(item)
+        engine.collisions[player].append((item, item.heal))
 
 def main():
     engine = neon_engine.NeonEngine('Neon Souls')
@@ -64,19 +77,26 @@ def main():
     with open('player_sprites.json', 'r') as p_file:
         player_sprites = json.load(p_file)
 
+    with open('sentinal_sprites.json') as file:
+        sentinal_sprites = json.load(file)
+
     player_static = player_sprites['static_sprites']
     player_walking = player_sprites['walking_sprites']
-    player_running = player_sprites['running_sprites']
+    sentinal_sprites = sentinal_sprites['sprite_list']
 
-    player = Player(player_static, player_walking, player_running, (128, 128), 'default', 2, 300, 400)
+    player = Player(player_static, player_walking, (128, 128), 'default', 2, 300, 400)
 
+    enemy_list = []
+    sentinal1 = SentinalEnemy(sentinal_sprites, player, (70,70), [(400, 500), (600, 500)], 2, 300, 500)
+
+    enemy_list.append(sentinal1)
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
 
     gravity_manager.add_object(player)
     
     # create background and level
-    init_map(engine, player, gravity_manager)
+    init_map(engine, player, gravity_manager, enemy_list)
 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
     engine.movement_function = player.move_player
