@@ -101,7 +101,8 @@ class Player(ActorBase, GravityBound):
 
     MAX_JUMP_VELOCITY = -10
     MAX_FALL_VELOCITY = 20
-    def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0, layer=5):
+
+    def __init__(self, static_image_path, walking_sprite_path, running_sprite_path, image_size, gravity_region, z=0, x=0, y=0, layer=5):
         """
         Initalizes the player. The player has a custom sprite manager so it sets image_path to none. 
         
@@ -119,7 +120,7 @@ class Player(ActorBase, GravityBound):
         self.gravity_region = gravity_region
         self.facing_left = False
 
-        self.sprite_manager = WalkingAnimatedSprite(static_image_path, walking_sprite_path)
+        self.sprite_manager = WalkingAnimatedSprite(static_image_path, running_sprite_path)
         self.get_image([0,0])
         self.blocks = pygame.sprite.Group()
 
