@@ -77,7 +77,7 @@ def main():
     player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
 
     enemy_list = []
-    sentinal1 = SentinalEnemy(sentinal_sprites,player,(70,70),[(400, 500), (600, 500)], 2, 300, 500)
+    sentinal1 = SentinalEnemy(sentinal_sprites,(70,70),[(400, 500), (600, 500)], 2, 300, 500)
 
     enemy_list.append(sentinal1)
     gravity_manager = GravityManager()

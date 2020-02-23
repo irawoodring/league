@@ -217,7 +217,7 @@ class Player(ActorBase, GravityBound):
         If the player isn't moving then it returns the player standing.
 
         param - vector: the vector of the player
-        
+
         Previously, David wanted this function static but then made it an
         instance member. But the original function signature remained. 
         """
@@ -231,7 +231,33 @@ class Player(ActorBase, GravityBound):
     
 
 class SentinalEnemy(ActorBase):
-    def __init__(self, sprite_loader_path, player_instance, image_size, patrol_list, z=0, x=0, y=0, speed=100, layer=5):
+    """
+    Class for sentinal enemy. Named for the sprite name it belongs to in 
+    assets/warped_enemies_pack_1_files/sentinal
+
+    A hovering robot that does a static patrol. 
+    
+    Previously David wanted this 
+    actor to pursue the player if they got in range. However there started being 
+    performance issues that caused David to not implement this feature. Concersn
+    that having multiples of this actor having that check would kill performance 
+    hard.
+    """
+
+    def __init__(self, sprite_loader_path, image_size, patrol_list, z=0, x=0, y=0, speed=100, layer=5):
+        """
+        Initializes the Sentinal. Unlike the player, the sentinal has only one continusous changing sprite.
+        The sentinial has a patrol list which it follows a path to reach every point in the path.
+
+        param - sprite_loader_path: The list of paths to the sentinal's sprite 
+        rotation
+        param - image_size: The size of this sentinal
+        param - patrol_list: A list of coordinates the sentinal will go to in 
+        rotation
+        param - x, y, z: The starting location of this sentinal
+        param - speed: the speed of this sentinal
+        param - layer: the layer this sentinal exists in. 
+        """
         super().__init__(None, image_size, z=z, x=x, y=y)
         self._layer = layer
         self.velocity = [0,0]
@@ -241,13 +267,18 @@ class SentinalEnemy(ActorBase):
         self.patrol_list = patrol_list
         self.current_patrol_point = patrol_list[0]
         self.patrol_index = 0
-        self.player = player_instance
         
         self.sprite_manager = ConstantAnimatedSprite(sprite_loader_path)
         self.image = self.sprite_manager.get_sprite(self.facing_left)
         self.blocks = pygame.sprite.Group()
 
     def update(self, deta_game_time):
+        """
+        Implements update function for updatable. Determines the patrol path for the 
+        for this actor and updates its position
+
+        param - deta_game_time: the delta time since this function was last called.
+        """
         # For some reason the rect object is position at 0,0 at the start of every update function.
         self.rect.x = self.x
         self.rect.y = self.y
@@ -259,15 +290,14 @@ class SentinalEnemy(ActorBase):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        # self.collisions = []
-        # for sprite in self.blocks:
-        #     self.collider.rect.x = sprite.x
-        #     self.collider.rect.y = sprite.y
-        #     if pygame.sprite.collide_rect(self, self.collider):
-        #         self.collisions.append(sprite)
-
     def determine_move(self, delta_game_time):
-        # player_distance = SentinalEnemy.get_distance(self.x, self.player.x, self.y, self.player.y)
+        """
+        Helper function. Determines how this sentinal will move. If its reached
+        a patrol point, it cycles to the next one. Currently it only does 
+        patrol points on the same plane so patrol points with a y component 
+        will not be respected.       
+        """
+        logger.info(self.current_patrol_point)
         self.update_patrol_point()
         dist_from_x = self.current_patrol_point[0] - self.x
         if dist_from_x < 0:
@@ -276,17 +306,23 @@ class SentinalEnemy(ActorBase):
         else:
             amount = self.speed * delta_game_time
             self.velocity = [amount, 0]
-
-    def get_distance(x1, x2, y1, y2):
-        return math.sqrt(((x2-x1)**2) + ((y2 - y1)**2))
     
     def update_patrol_point(self):
+        """
+        Helper function. Checks if this sentinal has reached the patrol point
+        if so, it cycles the next patrol point is queued 
+        """
         dist_from_x = self.current_patrol_point[0] - self.x
         if abs(dist_from_x) < 25:
             self.patrol_index = (self.patrol_index + 1) % len(self.patrol_list)
             self.current_patrol_point = self.patrol_list[self.patrol_index]
 
     def get_image(self, vector):
+        """
+        Cycles the sentinals current sprite.
+
+        param - vector: the current vector of this sentinal 
+        """
         self.facing_left = True if self.velocity[0] < 0 else False
         self.image = self.sprite_manager.get_sprite(self.facing_left)
         self.image = pygame.transform.scale(self.image, self.image_size)
