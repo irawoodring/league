@@ -7,6 +7,7 @@ sys.path.append('..')
 from league import DUGameObject
 
 class Item(DUGameObject):
+    """Contains generic properties for an animated game item"""
     def __init__(self, image_path, x, y, layer=3):
         super().__init__(self)
         self._layer = layer
@@ -23,9 +24,19 @@ class Item(DUGameObject):
         self.animating_up = False
 
     def grab(self, player):
+        """To be overridden to create affect in-game
+
+        Args:
+            player (actors.Player): player instance to apply effects to
+        """
         pass
 
     def update(self, delta_time):
+        """Create bouncing animation and correctly set rect for collision
+
+        Args:
+            delta_time (float): time to adjust for when calculating frames/movement
+        """
         if not self.alive():
             self.rect = pygame.Rect(0, 0, 0, 0)
             return
