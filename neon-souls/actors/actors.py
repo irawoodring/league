@@ -17,8 +17,28 @@ import logging
 
 logger = logging.getLogger('actor')
 
+
+"""
+Contains all the classes for actors that exist in the game
+
+Date 2/22/2020
+"""
 class ActorBase(Character):
+    """
+    The base actor for all actors that exist in the game. contains shared 
+    functions and has initialization that all actors use. 
+    """
+
     def __init__(self, image_path, image_size, z=0, x=0, y=0):
+        """
+        Constructor for base actor. Initializes shared features for all actors.
+        image_path assumes actor has a static image. Some actors send a None 
+        because they never have a static image. If None the image is not set.
+
+        param - image_path: The path this actors sprite
+        param - image_size: The size of this actors sprite
+        param - x, y, z: The starting coordinates of this actor
+        """
         super().__init__(z=z, x=x, y=y)
 
         self.x = x
@@ -46,6 +66,17 @@ class ActorBase(Character):
         self.collider.rect = self.collider.image.get_rect()
     
     def handle_map_collisions(self):
+        """
+        Shared function for most actors. Checks if the actor is colliding with the 
+        impassible ground in the map. Kills velocity in horizontal or vertical 
+        direction depending on what axis the actor hit from. Checks the top, 
+        bottom, left, and right sides of the actor to see exactly where the hit
+        occured. 
+
+        THIS FUNCTION ISN'T PERFECT. SOMETIMES THE ACTOR CAN FALL IN SUCH A WAY 
+        THAT THE EDGES OF THE ACTOR WON'T DETECT THE MAP. THE ACTOR WILL FALL
+        THROUGH THE FLOOR IN THIS CASE.
+        """
         for collision in self.collisions:
             bot = bool(collision.rect.collidepoint(self.rect.midbottom))
             top = bool(collision.rect.collidepoint(self.rect.midtop))
@@ -61,9 +92,26 @@ class ActorBase(Character):
             self.velocity[0] = 0 if left and self.velocity[0] < 0 else self.velocity[0]
 
 class Player(ActorBase, GravityBound):
+    """
+    Player class. The player class repesents the player on the screen. It has 
+    functions for handling user input and for handling collisions in game. 
+    The player implements GravityBound interface meaning every update, the player
+    is affected by gravity.
+    """
+
     MAX_JUMP_VELOCITY = -10
     MAX_FALL_VELOCITY = 20
     def __init__(self, static_image_path, walking_sprite_path, image_size, gravity_region, z=0, x=0, y=0, layer=5):
+        """
+        Initalizes the player. The player has a custom sprite manager so it sets image_path to none. 
+        
+        param - static_image_path: The path to the standing stance of the player
+        param - walking image_path: A list of paths for the walking sprites of the player.
+        param - image_size: The size of the player
+        param - gravity_region: The region of gravity affecting the player
+        param - x, y, z: Starting location of the player.
+        param - layer: the layer the player exists in.
+        """
         super().__init__(None, image_size, z=z, x=x, y=y)
         self._layer = layer
         self.velocity = [0,0]
@@ -78,6 +126,14 @@ class Player(ActorBase, GravityBound):
         self.heath = Health(3, 1)
 
     def move_player(self, time, inputs):
+        """
+        Handles movement based input of the player. In the old version of player
+        made in class, multiple inputs could not be handled. Now velocity is 
+        calculated based on the inputs the player is passing in.
+
+        param - time: the delta time that has passed since this function was called last
+        param - inputs: A dict representing inputs on W, A, and D.
+        """
         amount = self.speed * time
         if inputs['W'] is True:
             jump_velocity = self.velocity[1] - amount
@@ -104,13 +160,15 @@ class Player(ActorBase, GravityBound):
 
         self.get_image(self.velocity)
 
-    def in_world(self):
-        """
-        Todo Check that we are still in the world
-        """
-        return True
-
     def update(self, time):
+        """
+        Implements updatable from game object. Updates the players location based
+        on the current frame's velocity. Also checks that the player is colliding
+        with the game world. Will also check the players health and kill the player
+        if the health reaches zero
+
+        param - time: the delta time that has passed since this function was last called.
+        """
         # For some reason the rect object is position at 0,0 at the start of every update function.
         self.rect.x = self.x
         self.rect.y = self.y
@@ -132,6 +190,13 @@ class Player(ActorBase, GravityBound):
             pass # We'll do something later when we have finished. other sections 
     
     def process_gravity(self, time, gravity_vector):
+        """
+        Implements function from gravity bound. Updates the player's velocity to
+        have the player affected by gravity. 
+
+        param - time: the delta time that has passed since this function was called last
+        param - gravity_vector: the vector of gravity that will affect the player.
+        """
         gravity_vector = (gravity_vector[0] * time, gravity_vector[1] * time)
 
         # Right now we ignore a horizontal gravity cause we can't handle
@@ -140,9 +205,22 @@ class Player(ActorBase, GravityBound):
         self.velocity[1] = self.velocity[1] + gravity_vector[1]
 
     def get_gravity_name(self):
+        """
+        Returns the gravity region this player is affected by.
+        """
         return self.gravity_region
 
     def get_image(self, vector):
+        """
+        Gets the next image that will represent the player. If the player is 
+        moving this will get the next image in the moving image list. 
+        If the player isn't moving then it returns the player standing.
+
+        param - vector: the vector of the player
+        
+        Previously, David wanted this function static but then made it an
+        instance member. But the original function signature remained. 
+        """
         if vector[0] == 0:
             self.image = self.sprite_manager.get_static_image(self.facing_left).convert_alpha()
         else:
