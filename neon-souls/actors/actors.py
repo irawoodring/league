@@ -98,10 +98,8 @@ class Player(ActorBase, GravityBound):
     The player implements GravityBound interface meaning every update, the player
     is affected by gravity.
     """
-
     MAX_JUMP_VELOCITY = -10
     MAX_FALL_VELOCITY = 20
-
     def __init__(self, static_image_path, walking_sprite_path, running_sprite_path, image_size, gravity_region, z=0, x=0, y=0, layer=5):
         """
         Initalizes the player. The player has a custom sprite manager so it sets image_path to none. 
@@ -124,7 +122,7 @@ class Player(ActorBase, GravityBound):
         self.get_image([0,0])
         self.blocks = pygame.sprite.Group()
 
-        self.heath = Health(3, 1)
+        self.health = Health(3, 1)
 
     def move_player(self, time, inputs):
         """
@@ -171,6 +169,7 @@ class Player(ActorBase, GravityBound):
         param - time: the delta time that has passed since this function was last called.
         """
         # For some reason the rect object is position at 0,0 at the start of every update function.
+        self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         self.handle_map_collisions()
@@ -187,7 +186,9 @@ class Player(ActorBase, GravityBound):
             if pygame.sprite.collide_rect(self, self.collider):
                 self.collisions.append(sprite)
 
-        if self.heath.at_zero():
+
+        if self.health.at_zero():
+            # self.kill()
             pass # We'll do something later when we have finished. other sections 
     
     def process_gravity(self, time, gravity_vector):
@@ -228,8 +229,7 @@ class Player(ActorBase, GravityBound):
             self.image = self.sprite_manager.get_walking_image(self.facing_left)
 
         self.image = pygame.transform.scale(self.image, self.image_size)
-        self.rect = self.image.get_rect()
-    
+
 
 class SentinalEnemy(ActorBase):
     """
@@ -331,4 +331,4 @@ class SentinalEnemy(ActorBase):
         self.facing_left = True if self.velocity[0] < 0 else False
         self.image = self.sprite_manager.get_sprite(self.facing_left)
         self.image = pygame.transform.scale(self.image, self.image_size)
-        self.rect = self.image.get_rect()
+        # self.rect = self.image.get_rect()

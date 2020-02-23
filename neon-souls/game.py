@@ -6,10 +6,12 @@ sys.path.append('../')
 import league
 from background import Background
 from camera import CameraUpdates
+from items.health_item import HealthItem
 from actors import Player, SentinalEnemy
 from physics import GravityManager
 import neon_engine
 import json
+import random
 
 
 """
@@ -34,7 +36,7 @@ def init_map(engine, player, gravity, enemy_list):
     sprites = league.Spritesheet('./assets/tileset-collapsed.png', league.Settings.tile_size, 14)
     level1 = league.Tilemap('./assets/level1.lvl', sprites, layer = 2)
     world_size = (level1.wide*league.Settings.tile_size, level1.high*league.Settings.tile_size)
-    
+
     # initialize camera
     cam = CameraUpdates(player, world_size)
     engine.objects.append(cam)
@@ -50,10 +52,10 @@ def init_map(engine, player, gravity, enemy_list):
     # Gravity must be appended first
     engine.objects.append(gravity)
     player.world_size = world_size
-    player.rect = player.image.get_rect()
     player.blocks.add(level1.impassable)
     engine.objects.append(player)
     engine.drawables.add(player)
+    place_random_items(engine, world_size, player)
 
     # add background music with map creation
     ### MUSIC IS BROKEN
@@ -66,6 +68,16 @@ def init_map(engine, player, gravity, enemy_list):
         enemy.blocks.add(level1.impassable)
         engine.objects.append(enemy)
         engine.drawables.add(enemy)
+
+
+def place_random_items(engine, level_size, player):
+    engine.collisions[player] = []
+    for i in range(1, 5):
+        x = random.randrange(0, level_size[0] // i)
+        item = HealthItem(x, level_size[1])
+        engine.drawables.add(item)
+        engine.objects.append(item)
+        engine.collisions[player].append((item, item.grab))
 
 def main():
     """
