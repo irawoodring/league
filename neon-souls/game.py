@@ -87,10 +87,11 @@ def main():
 
     player_static = player_sprites['static_sprites']
     player_walking = player_sprites['walking_sprites']
+    player_running = player_sprites['running_sprites']
 
     sentinal_sprites = sentinal_sprites['sprite_list']
 
-    player = Player(player_static, player_walking,(128, 128), 'default', 2, 300, 400)
+    player = Player(player_static, player_walking, player_running, (128, 128), 'default', 2, 300, 400)
 
     enemy_list = []
     sentinal1 = SentinalEnemy(sentinal_sprites,(70,70),[(400, 500), (600, 500)], 2, 300, 500)
