@@ -2,7 +2,18 @@ import league
 import pygame
 
 class Background(league.DGameObject):
+    """
+    Since we have a side scroller, we can't use the level as a background.
+    Instead we need to insert a custom background underneth the main map. This
+    class facilitates that. 
+    """
     def __init__(self, image_path, layer=0):
+        """
+        Inits background sprite
+
+        param - image_path: The path to the background
+        param - layer: The layer this background will exist on.
+        """
         super().__init__(self)
         self._layer = layer
         self.image = pygame.image.load(image_path).convert_alpha()
