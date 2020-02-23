@@ -229,7 +229,7 @@ class Player(ActorBase, GravityBound):
             self.image = self.sprite_manager.get_walking_image(self.facing_left)
 
         self.image = pygame.transform.scale(self.image, self.image_size)
-    
+
 
 class SentinalEnemy(ActorBase):
     """

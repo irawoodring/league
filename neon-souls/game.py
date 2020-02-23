@@ -74,7 +74,7 @@ def place_random_items(engine, level_size, player):
     engine.collisions[player] = []
     for i in range(1, 5):
         x = random.randrange(0, level_size[0] // i)
-        item = HealthItem('./assets/health-item.png', x, level_size[1])
+        item = HealthItem(x, level_size[1])
         engine.drawables.add(item)
         engine.objects.append(item)
         engine.collisions[player].append((item, item.grab))
@@ -99,7 +99,6 @@ def main():
 
     player_static = player_sprites['static_sprites']
     player_walking = player_sprites['walking_sprites']
-
     player_running = player_sprites['running_sprites']
 
     sentinal_sprites = sentinal_sprites['sprite_list']
