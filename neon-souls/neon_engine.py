@@ -79,6 +79,12 @@ class NeonEngine(Engine):
         self.action_function(self, self.action_inputs)
 
     def check_collisions(self):
+        """
+        Overrides the base collision checker. At the end of checking collisions
+        we need to delete projectiles and enemies that have collided with each other
+        After calling the base collision method the engine checks if any projectiles 
+        or enemies have hit and removes them from all relevent data structures. 
+        """
         super().check_collisions()
         # logger.info(self.collisions)
         for projectile in self.spent_projectiles:
@@ -98,9 +104,23 @@ class NeonEngine(Engine):
         self.dead_enemies.clear()
 
     def cleanup_projectile(self, projectile):
+        """
+        Marks a projectile for removal in next collison detection check. 
+        Attach this to a projectile object as a function reference and then 
+        pass the projectile as a parameter when calling the function
+
+        param - projectile: The projectile being removed.
+        """
         self.spent_projectiles.append(projectile)
 
     def kill_enemy(self, enemy):
+        """
+        Mark an enemy for removal in next collision detection check. 
+        Attach this to an enemy object as a function reference and then 
+        pass the enemy as a parameter when calling the function
+
+        param - enemy: The enemy being removed
+        """
         self.dead_enemies.append(enemy)
 
 
