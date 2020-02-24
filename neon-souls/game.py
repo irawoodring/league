@@ -159,7 +159,6 @@ def main():
     engine.run()
 
 
-
 #void main(int argc, char* argv[])...
 if __name__=='__main__':
     league.logger_init()

@@ -98,8 +98,6 @@ class NeonEngine(Engine):
         self.dead_enemies.clear()
 
     def cleanup_projectile(self, projectile):
-        logger.info('Deleting projectile')
-        # del self.collisions[projectile]
         self.spent_projectiles.append(projectile)
 
     def kill_enemy(self, enemy):
