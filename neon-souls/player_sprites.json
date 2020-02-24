@@ -1,5 +1,5 @@
 {
-  "static_sprites":"./assets/idle-1.png",
+  "static_sprites":"./assets/shoot.png",
   "walking_sprites": [
     "./assets/walk-1.png",
     "./assets/walk-2.png",
@@ -19,13 +19,13 @@
     "./assets/walk-16.png"
   ],
   "running_sprites": [
-    "./assets/run-1.png",
-    "./assets/run-2.png",
-    "./assets/run-3.png",
-    "./assets/run-4.png",
-    "./assets/run-5.png",
-    "./assets/run-6.png",
-    "./assets/run-7.png",
-    "./assets/run-8.png"
+    "./assets/run-shoot-1.png",
+    "./assets/run-shoot-2.png",
+    "./assets/run-shoot-3.png",
+    "./assets/run-shoot-4.png",
+    "./assets/run-shoot-5.png",
+    "./assets/run-shoot-6.png",
+    "./assets/run-shoot-7.png",
+    "./assets/run-shoot-8.png"
   ]
 }

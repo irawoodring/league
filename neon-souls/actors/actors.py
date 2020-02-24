@@ -244,7 +244,7 @@ class Player(ActorBase, GravityBound):
             return False
 
     def loadBullet(self):
-        bullet = Projectile(self.x + 55, self.y+50, self.facing_left)
+        bullet = Projectile(self.x + 70, self.y + 50, self.facing_left)
         return bullet
 
 
