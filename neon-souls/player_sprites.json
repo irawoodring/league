@@ -17,5 +17,15 @@
     "./assets/walk-14.png",
     "./assets/walk-15.png",
     "./assets/walk-16.png"
+  ],
+  "running_sprites": [
+    "./assets/run-1.png",
+    "./assets/run-2.png",
+    "./assets/run-3.png",
+    "./assets/run-4.png",
+    "./assets/run-5.png",
+    "./assets/run-6.png",
+    "./assets/run-7.png",
+    "./assets/run-8.png"
   ]
 }

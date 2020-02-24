@@ -1,0 +1,10 @@
+{
+    "sprite_list":[
+        "./assets/warped_enemies_pack_1_files/sentinel/sprites/sentinel1.png",
+        "./assets/warped_enemies_pack_1_files/sentinel/sprites/sentinel2.png",
+        "./assets/warped_enemies_pack_1_files/sentinel/sprites/sentinel3.png",
+        "./assets/warped_enemies_pack_1_files/sentinel/sprites/sentinel4.png",
+        "./assets/warped_enemies_pack_1_files/sentinel/sprites/sentinel5.png",
+        "./assets/warped_enemies_pack_1_files/sentinel/sprites/sentinel6.png"
+    ]
+}

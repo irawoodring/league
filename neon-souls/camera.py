@@ -28,7 +28,7 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
             if y < 0: # don't go under the floor
                 y = 0
             self.cam += (pygame.Vector2((x, y)) - self.cam) * 0.05
-            self.cam.x = max(-(self.world_size[0]-league.Settings.width), min(0, self.cam.x))
+            self.cam.x = max(-(self.world_size[0]-(league.Settings.width + (league.Settings.tile_size * 3))), min(-2 * league.Settings.tile_size, self.cam.x))
 
     def draw(self, surface):
         spritedict = self.spritedict
@@ -50,3 +50,4 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
                     dirty_append(rec)
             spritedict[spr] = newrect
         return dirty       
+        
