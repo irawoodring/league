@@ -5,6 +5,9 @@ import sys
 sys.path.append('../')
 import league
 from background import Background
+from actors import Player
+from actors import Projectile
+from physics import GravityManager
 from camera import CameraUpdates
 from items.health_item import HealthItem
 from actors import Player, SentinalEnemy
@@ -61,6 +64,7 @@ def init_map(engine, player, gravity, enemy_list):
     engine.collisions[player] = []
     engine.objects.append(player)
     engine.drawables.add(player)
+
     place_random_items(engine, world_size, player)
 
     flag = Flag(world_size[0] - (league.Settings.tile_size * 10), world_size[1])
@@ -80,7 +84,17 @@ def init_map(engine, player, gravity, enemy_list):
         engine.objects.append(enemy)
         engine.drawables.add(enemy)
         engine.collisions[player].append((enemy, player.take_dmg))
-
+    
+def fire(Neon_Engine, inputs):
+        if inputs['SPACE'] is True:
+            if Neon_Engine.objects[2].check_weapon_cooldown():
+                pr = Neon_Engine.objects[2].loadBullet()
+                Neon_Engine.objects.append(pr)
+                Neon_Engine.drawables.add(pr)
+                # Sound effect added from
+                # https://www.zapsplat.com/music/science-fiction-weapon-gun-shoot-powerful-2/
+                pew = pygame.mixer.Sound('assets/laser1.wav')
+                pew.play()
 
 def place_random_items(engine, level_size, player):
     rand_start = level_size[0] // 4
@@ -131,6 +145,7 @@ def main():
 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
     engine.movement_function = player.move_player
+    engine.action_function = fire
     engine.physics_functions.append(player.process_gravity)
 
     engine.events[pygame.QUIT] = engine.stop

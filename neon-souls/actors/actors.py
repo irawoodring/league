@@ -130,6 +130,10 @@ class Player(ActorBase, GravityBound):
         # logger.info(text)
         # self.overlay = self.font.render('{}'.format(self.health.current_health), True, (0,0,0))
 
+        self.last_tick = pygame.time.get_ticks()
+        self.weapon_cooldown = 300
+
+
     def move_player(self, time, inputs):
         """
         Handles movement based input of the player. In the old version of player
@@ -237,14 +241,45 @@ class Player(ActorBase, GravityBound):
 
         self.image = pygame.transform.scale(self.image, self.image_size)
 
+    def check_weapon_cooldown(self):
+        current = pygame.time.get_ticks()
+        if current - self.last_tick >= self.weapon_cooldown:
+            self.last_tick = current
+            return True
+
+        else:
+            return False
+
+    def loadBullet(self):
+        bullet = Projectile(self.x + 70, self.y + 47, self.facing_left)
+        return bullet
+
     def take_dmg(self, object):
         now = pygame.time.get_ticks()
         if now - self.last_hit > 1000:
             self.health.lose_health()
             logger.info('{} HP'.format(self.health.current_health))
             self.last_hit = now
-    
 
+
+class Projectile(ActorBase):
+    IMAGE_PATH = './assets/shot-2.png'
+    def __init__(self, x, y, facing_left, image_path=IMAGE_PATH):
+        
+        super().__init__(image_path, (15,11), x, y)
+        self._layer = 50
+        self.rect.x = x
+        self.rect.y = y
+        self.facing_left = facing_left
+
+        if(self.facing_left): 
+            self.image = pygame.transform.flip(self.image, True, False)
+
+    def update(self, time):
+        if( self.facing_left ):
+            self.rect.x = self.rect.x - 8
+        else:
+            self.rect.x = self.rect.x + 8
 
 class SentinalEnemy(ActorBase):
     """
