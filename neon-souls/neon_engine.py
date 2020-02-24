@@ -41,6 +41,8 @@ class NeonEngine(Engine):
         self.physics_functions = []
         self.enemy_list = []
         self.spent_projectiles = []
+        self.dead_enemies = []
+        self.player_instance = None
 
     # Multi key press info came from https://stackoverflow.com/questions/37121511/can-i-press-two-keys-simultaneously-for-a-single-event-using-pygame
     def handle_inputs(self):
@@ -85,12 +87,23 @@ class NeonEngine(Engine):
             self.objects.remove(projectile)
             self.drawables.remove(projectile)
 
+        for enemy in self.dead_enemies:
+            player_collisions = self.collisions[self.player_instance]
+            self.collisions[self.player_instance] = [item for item in player_collisions if item[0] != enemy]
+            self.objects.remove(enemy)
+            self.drawables.remove(enemy)
+            self.enemy_list.remove(enemy)
+        
         self.spent_projectiles.clear()
+        self.dead_enemies.clear()
 
     def cleanup_projectile(self, projectile):
         logger.info('Deleting projectile')
         # del self.collisions[projectile]
         self.spent_projectiles.append(projectile)
+
+    def kill_enemy(self, enemy):
+        self.dead_enemies.append(enemy)
 
 
 

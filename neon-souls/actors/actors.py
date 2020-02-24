@@ -290,7 +290,7 @@ class SentinalEnemy(ActorBase):
     hard.
     """
 
-    def __init__(self, sprite_loader_path, image_size, patrol_list, z=0, x=0, y=0, speed=100, layer=5):
+    def __init__(self, sprite_loader_path, image_size, patrol_list, kill_function, z=0, x=0, y=0, speed=100, layer=5):
         """
         Initializes the Sentinal. Unlike the player, the sentinal has only one continusous changing sprite.
         The sentinial has a patrol list which it follows a path to reach every point in the path.
@@ -319,6 +319,8 @@ class SentinalEnemy(ActorBase):
         self.sprite_manager = ConstantAnimatedSprite(sprite_loader_path)
         self.image = self.sprite_manager.get_sprite(self.facing_left)
         self.blocks = pygame.sprite.Group()
+
+        self.kill_function = kill_function
 
     def update(self, deta_game_time):
         """
@@ -379,5 +381,5 @@ class SentinalEnemy(ActorBase):
         # self.rect = self.image.get_rect()
 
     def get_killed(self, projectile):
-        logger.info('Got killed by {}'.format(projectile))
         projectile.kill_function(projectile)
+        self.kill_function(self)

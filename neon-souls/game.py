@@ -98,8 +98,6 @@ def fire(engine, inputs):
                 engine.collisions[pr] = []
                 for enemy in engine.enemy_list:
                     engine.collisions[pr].append((enemy, enemy.get_killed))
-
-                logger.info(engine.collisions)
                 # Sound effect added from
                 # https://www.zapsplat.com/music/science-fiction-weapon-gun-shoot-powerful-2/
                 pew = pygame.mixer.Sound('assets/laser1.wav')
@@ -139,8 +137,9 @@ def main():
     sentinal_sprites = sentinal_sprites['sprite_list']
 
     player = Player(player_static, player_walking, player_running, (128, 128), 'default', 2, 300, 400)
+    engine.player_instance = player
 
-    sentinal1 = SentinalEnemy(sentinal_sprites,(100,100),[(400, 500), (600, 500)], 2, 300, 475)
+    sentinal1 = SentinalEnemy(sentinal_sprites,(100,100),[(400, 500), (600, 500)], engine.kill_enemy, 2, 300, 475)
 
     engine.enemy_list.append(sentinal1)
     gravity_manager = GravityManager()
