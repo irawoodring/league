@@ -117,12 +117,18 @@ class Player(ActorBase, GravityBound):
         self.speed = 200
         self.gravity_region = gravity_region
         self.facing_left = False
+        self.last_hit = pygame.time.get_ticks()
 
         self.sprite_manager = WalkingAnimatedSprite(static_image_path, running_sprite_path)
         self.get_image([0,0])
         self.blocks = pygame.sprite.Group()
 
         self.health = Health(3, 1)
+        # self.font = pygame.font.Font('freesansbold.ttf', 32)
+        # logger.info(self.font)
+        # text = '{} HP'.format(self.health.current_health)
+        # logger.info(text)
+        # self.overlay = self.font.render('{}'.format(self.health.current_health), True, (0,0,0))
 
         self.last_tick = pygame.time.get_ticks()
         self.weapon_cooldown = 300
@@ -192,8 +198,8 @@ class Player(ActorBase, GravityBound):
 
 
         if self.health.at_zero():
-            # self.kill()
-            pass # We'll do something later when we have finished. other sections 
+            logger.fatal('OH NO YOU DIED')
+            exit(0) 
     
     def process_gravity(self, time, gravity_vector):
         """
@@ -209,6 +215,7 @@ class Player(ActorBase, GravityBound):
         # it right now
         # self.velocity[0] = self.velocity[0] + gravity_vector[0]
         self.velocity[1] = self.velocity[1] + gravity_vector[1]
+        logger.info(gravity_vector[1])
 
     def get_gravity_name(self):
         """
@@ -247,6 +254,13 @@ class Player(ActorBase, GravityBound):
         bullet = Projectile(self.x + 70, self.y + 50, self.facing_left)
         return bullet
 
+    def take_dmg(self, object):
+        now = pygame.time.get_ticks()
+        if now - self.last_hit > 1000:
+            self.health.lose_health()
+            logger.info('{} HP'.format(self.health.current_health))
+            self.last_hit = now
+
 
 class Projectile(ActorBase):
     IMAGE_PATH = './assets/shot-2.png'
@@ -266,11 +280,6 @@ class Projectile(ActorBase):
             self.rect.x = self.rect.x - 8
         else:
             self.rect.x = self.rect.x + 8
-
-    
-
-    def process_gravity(self):
-        pass
 
 class SentinalEnemy(ActorBase):
     """
