@@ -89,19 +89,23 @@ def init_map(engine, player, gravity):
         engine.collisions[player].append((enemy, player.take_dmg))
     
 def fire(engine, inputs):
-        if inputs['SPACE'] is True:
-            if engine.objects[2].check_weapon_cooldown():
-                pr = engine.objects[2].loadBullet()
-                engine.objects.append(pr)
-                engine.drawables.add(pr)
-                pr.kill_function = engine.cleanup_projectile
-                engine.collisions[pr] = []
-                for enemy in engine.enemy_list:
-                    engine.collisions[pr].append((enemy, enemy.get_killed))
-                # Sound effect added from
-                # https://www.zapsplat.com/music/science-fiction-weapon-gun-shoot-powerful-2/
-                pew = pygame.mixer.Sound('assets/laser1.wav')
-                pew.play()
+    """
+    A function that draws projectile objects when pressing the spacebar.
+    It also handles projectile collisions with enemies.
+    """
+    if inputs['SPACE'] is True:
+        if engine.objects[2].check_weapon_cooldown():
+            pr = engine.objects[2].loadBullet()
+            engine.objects.append(pr)
+            engine.drawables.add(pr)
+            pr.kill_function = engine.cleanup_projectile
+            engine.collisions[pr] = []
+            for enemy in engine.enemy_list:
+                engine.collisions[pr].append((enemy, enemy.get_killed))
+            # Sound effect added from
+            # https://www.zapsplat.com/music/science-fiction-weapon-gun-shoot-powerful-2/
+            pew = pygame.mixer.Sound('assets/laser1.wav')
+            pew.play()
 
 def place_random_items(engine, level_size, player):
     rand_start = level_size[0] // 4
