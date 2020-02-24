@@ -236,6 +236,11 @@ class Player(ActorBase, GravityBound):
         self.image = pygame.transform.scale(self.image, self.image_size)
 
     def check_weapon_cooldown(self):
+        """
+        Prevents the player from generating a continous
+        stream of bullets by checking if the cooldown 
+        time has elapsed
+        """
         current = pygame.time.get_ticks()
         if current - self.last_tick >= self.weapon_cooldown:
             self.last_tick = current
@@ -245,6 +250,10 @@ class Player(ActorBase, GravityBound):
             return False
 
     def loadBullet(self):
+        """
+        Generates a projectile object initialized with the position
+        of the player's gun and the direction the player is facing
+        """
         bullet = Projectile(self.x + 70, self.y + 47, self.facing_left)
         return bullet
 
@@ -257,8 +266,21 @@ class Player(ActorBase, GravityBound):
 
 
 class Projectile(ActorBase):
+    """
+    Projectile class. The Projectile class repesents the the projectiles a player can generate on the screen. It has
+    a function that updates its x position in the direction the player is facing.
+    """
+
     IMAGE_PATH = './assets/shot-2.png'
     def __init__(self, x, y, facing_left, image_path=IMAGE_PATH):
+        """
+        Initalizes a projectile.  
+        
+        param - x, y: the starting location of the projectile
+        param - facing_left: a boolean value for the direction the projectile faces
+        param - image_path: The path to the bullet png file
+
+        """
         
         super().__init__(image_path, (15,11), x, y)
         self._layer = 50
@@ -271,10 +293,14 @@ class Projectile(ActorBase):
             self.image = pygame.transform.flip(self.image, True, False)
 
     def update(self, time):
+        """
+        Updates the position of a projectileby continuously
+        shifting towards the direction given during initialization
+        """
         if( self.facing_left ):
-            self.rect.x = self.rect.x - 8
+            self.rect.x = self.rect.x - 16
         else:
-            self.rect.x = self.rect.x + 8
+            self.rect.x = self.rect.x + 16
 
 class SentinalEnemy(ActorBase):
     """
