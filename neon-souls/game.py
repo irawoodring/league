@@ -92,7 +92,7 @@ def fire(Neon_Engine, inputs):
                 Neon_Engine.drawables.add(pr)
                 # Sound effect added from
                 # https://www.zapsplat.com/music/science-fiction-weapon-gun-shoot-powerful-2/
-                pew = pygame.mixer.Sound('assets/scifi_weap.mp3')
+                pew = pygame.mixer.Sound('assets/scifi_weap-[AudioTrimmer.com].mp3')
                 pew.play()
     
 
