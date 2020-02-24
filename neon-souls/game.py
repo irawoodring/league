@@ -83,6 +83,7 @@ def init_map(engine, player, gravity, enemy_list):
         enemy.blocks.add(level1.impassable)
         engine.objects.append(enemy)
         engine.drawables.add(enemy)
+        engine.collisions[player].append((enemy, player.take_dmg))
     
 def fire(Neon_Engine, inputs):
         if inputs['SPACE'] is True:
@@ -94,8 +95,6 @@ def fire(Neon_Engine, inputs):
                 # https://www.zapsplat.com/music/science-fiction-weapon-gun-shoot-powerful-2/
                 pew = pygame.mixer.Sound('assets/laser1.wav')
                 pew.play()
-    
-
 
 def place_random_items(engine, level_size, player):
     rand_start = level_size[0] // 4
