@@ -79,6 +79,7 @@ def init_map(engine, player, gravity, enemy_list):
         enemy.blocks.add(level1.impassable)
         engine.objects.append(enemy)
         engine.drawables.add(enemy)
+        engine.collisions[player].append((enemy, player.take_dmg))
 
 
 def place_random_items(engine, level_size, player):
