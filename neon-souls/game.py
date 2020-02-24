@@ -13,6 +13,7 @@ from items.health_item import HealthItem
 from actors import Player, SentinalEnemy
 from physics import GravityManager
 from flag import Flag
+from overlay import Overlay
 import neon_engine
 import json
 import random
@@ -153,6 +154,10 @@ def main():
     
     # create background and level
     init_map(engine, player, gravity_manager)
+
+    overlay = Overlay(player)
+    engine.objects.append(overlay)
+    engine.drawables.add(overlay)
 
     pygame.time.set_timer(pygame.USEREVENT + 1, 1000 // league.Settings.gameTimeFactor)
     engine.movement_function = player.move_player
