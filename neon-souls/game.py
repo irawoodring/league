@@ -139,9 +139,13 @@ def main():
     player = Player(player_static, player_walking, player_running, (128, 128), 'default', 2, 300, 400)
     engine.player_instance = player
 
-    sentinal1 = SentinalEnemy(sentinal_sprites,(100,100),[(400, 500), (600, 500)], engine.kill_enemy, 2, 300, 475)
+    sentinal1 = SentinalEnemy(sentinal_sprites, (100,100), [(400, 500), (600, 500)], engine.kill_enemy, 2, 300, 475)
+    sentinal2 = SentinalEnemy(sentinal_sprites, (100,100), [(1100, 0), (1300, 0)], engine.kill_enemy, 2, 1200, 400)
+    sentinal3 = SentinalEnemy(sentinal_sprites, (100,100), [(1500, 0), (1700, 0)], engine.kill_enemy, 2, 1600, 450)
 
     engine.enemy_list.append(sentinal1)
+    engine.enemy_list.append(sentinal2)
+    engine.enemy_list.append(sentinal3)
     gravity_manager = GravityManager()
     gravity_manager.add_gravity('default', (0, 15))
 
