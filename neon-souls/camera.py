@@ -11,8 +11,15 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
     """
     Modified from
     https://stackoverflow.com/questions/14354171/add-scrolling-to-a-platformer-in-pygame/14357169#14357169
+    Creates a camera object to follow the player around the map
     """
     def __init__(self, target, world_size):
+        """
+        Initalizes a camera object to follow a specific target.
+
+        param - target: the target game object being followed
+        param - world_size: The size of the world the camera will exist in.
+        """
         super().__init__()
         self.target = target
         self.cam = pygame.Vector2(0, 0)
@@ -21,6 +28,9 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
             self.add(target)
 
     def update(self, *args):
+        """
+        TODO: Write comments
+        """
         super().update(*args)
         if self.target:
             x = -self.target.rect.center[0] + league.Settings.width/2
@@ -31,6 +41,9 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
             self.cam.x = max(-(self.world_size[0]-(league.Settings.width + (league.Settings.tile_size * 3))), min(-2 * league.Settings.tile_size, self.cam.x))
 
     def draw(self, surface):
+        """
+        TODO: Write comments
+        """
         spritedict = self.spritedict
         surface_blit = surface.blit
         dirty = self.lostsprites
