@@ -29,7 +29,10 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
 
     def update(self, *args):
         """
-        TODO: Write comments
+        The update function for the camera. It updates the camera's position to 
+        follow the player around the map. 
+
+        param - *args: the arguemtns for this update function. In this case layers and the delta time
         """
         super().update(*args)
         if self.target:
@@ -42,7 +45,7 @@ class CameraUpdates(pygame.sprite.LayeredUpdates):
 
     def draw(self, surface):
         """
-        TODO: Write comments
+        Overrides the default draw function for LayeredUpdates. 
         """
         spritedict = self.spritedict
         surface_blit = surface.blit
