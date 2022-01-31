@@ -1,6 +1,6 @@
+# abstract base classes
 import abc
 import pygame
-from .settings import Settings
 
 class GameObject(abc.ABC):
     """Any object that makes up our game world."""
@@ -8,13 +8,13 @@ class GameObject(abc.ABC):
 
 class Drawable(pygame.sprite.Sprite):
     """Creates a drawable.  For us, a drawable is a pygame Sprite object."""
-    def __init__(self, layer=0, x=0, y=0):
+    def __init__(self, x=0, y=0, layer=0):
         super().__init__()
-        self._layer = layer
         self.image = None
-        self.rect = pygame.Rect(0, 0, Settings.tile_size, Settings.tile_size)
+        self.rect = None
         self.x = x
         self.y = y
+        self._layer = layer
 
 class Updateable(abc.ABC):
     """An interface that ensures an object has an update(gameDeltaTime) method."""
