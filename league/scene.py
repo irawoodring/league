@@ -6,6 +6,7 @@ class Scene:
         self.updateables = []
         self.drawables = pg.sprite.LayeredDirty()
         self.fps = 30
+        self.music = None
 
     def set_fps(fps):
         self.fps = fps

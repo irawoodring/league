@@ -9,26 +9,15 @@ class Engine:
     be as game agnostic as possible, and will try to emulate code
     from the book as much as possible.  If there are deviations they
     will be noted here.
-
-    Fields:
-    title - The name of the game.
-    running - Whether or not the engine is currently in the main game loop.
-    clock - The real world clock for elapsed time.
-    events - A dictionary of events and handling functions.
-    key_events - A dictionary of events and handling functions for KEYDOWN events.
-                 Please note that the backtick (`) key is default.
-    objects - A list of updateable game objects.
-    drawables - A list of drawable game objects.
-    screen - The window we are drawing upon.
-    real_delta_time - How much clock time has passed since our last check.
-    game_delta_time - How much game time has passed since our last check.
-    visible_statistics - Whether to show engine statistics statistics.
-    statistics_font - Which font to use for engine stats
-    collisions = A dictionary of objects that can collide, and the function to call when they do. 
     """
     
+    """delta_time is the elapsed time since the last frame in ms"""
     delta_time = 0
+    """events is the current set of events for this frame.  Allows GameObjects to check events themselves."""
+    events = None
 
+    """We must provide a title for the window, and can optionally
+    provide a width and/or height."""
     def __init__(self, title, width=1024, height=768):
         self.title = title
         self.running = False
@@ -58,20 +47,37 @@ class Engine:
         pygame.key.set_repeat(500)
         # Create statistics font
         self.statistics_font = pygame.font.Font(None,30)
+        # Allow pausing
+        self.paused = False
 
     def run(self):
         """The main game loop.  As close to our book code as possible."""
         self.running = True
+        if self.scene.music:
+            pygame.mixer.music.load(self.scene.music)
+            pygame.mixer.music.play(-1)
         while self.running:
             # The time since the last check
-            now = pygame.time.get_ticks()
-            delta_time = now - self.last_checked_time
-            self.last_checked_time = now
+            #now = pygame.time.get_ticks()
+            #delta_time = now - self.last_checked_time
+            #self.last_checked_time = now
 
             # Check events
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.paused = not self.paused
+
+            if self.paused:
+                Engine.delta_time = self.clock.tick(self.scene.fps) / 1000.0 # percentage of a second
+                continue
+
+            # Update updateables
+            for o in self.scene.updateables:
+                o.update()
 
             # Wipe screen
             self.screen.fill(self.scene.fill_color)
@@ -87,7 +93,7 @@ class Engine:
             pygame.display.flip()
 
             # Frame limiting code
-            self.clock.tick(self.scene.fps)
+            Engine.delta_time = self.clock.tick(self.scene.fps) / 1000.0 # percentage of a second
 
     # Show/Hide the engine statistics
     def toggle_statistics(self):
@@ -100,10 +106,6 @@ class Engine:
         fps = self.statistics_font.render(statistics_string, True, (255, 255, 255))
         self.screen.blit(fps, (10, 10))
     
-    # Toggle the engine to stop
-    def stop(self, time):
-        self.running = False
-
     # Shutdown pygame
-    def end(self, time):
+    def end(self):
         pygame.quit()

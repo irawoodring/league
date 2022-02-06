@@ -1,35 +1,36 @@
-# abstract base classes
-import abc
+# Multiple inheritance constructor call issue fixed, thanks to:
+# https://stackoverflow.com/questions/26927571/multiple-inheritance-in-python3-with-different-signatures
+#
 import pygame
+import abc
 
-class GameObject(abc.ABC):
+class GameObject():
     """Any object that makes up our game world."""
-    pass
+    def __init__(self):
+        self.x = 0.0
+        self.y = 0.0
 
-class Drawable(pygame.sprite.Sprite):
-    """Creates a drawable.  For us, a drawable is a pygame Sprite object."""
-    def __init__(self, x=0, y=0, layer=0):
+class UGameObject(GameObject):
+    """A game object that is updateable but not drawn."""
+    def __init__(self):
         super().__init__()
-        self.image = None
-        self.rect = None
-        self.x = x
-        self.y = y
-        self._layer = layer
 
-class Updateable(abc.ABC):
-    """An interface that ensures an object has an update(gameDeltaTime) method."""
-    @abc.abstractmethod
-    def update(gameDeltaTime):
+    def update():
         pass
 
-class UGameObject(GameObject, Updateable):
-    """A game object that is updateable but not drawn."""
-    pass
+class Drawable(GameObject, pygame.sprite.DirtySprite):
+    def __init__(self):
+        super().__init__()
+        pygame.sprite.DirtySprite.__init__(self)
 
-class DGameObject(GameObject, Drawable):
+class DGameObject(Drawable):
     """A game object that is drawable, but not updateable.  A static object."""
-    pass
+    def __init__(self):
+        super().__init__()
+
 
 class DUGameObject(UGameObject, Drawable):
     """A game object that is updateable and drawable."""
-    pass
+    def __init__(self):
+        super().__init__()
+        pygame.sprite.DirtySprite.__init__(self)
