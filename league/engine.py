@@ -15,6 +15,8 @@ class Engine:
     delta_time = 0
     """events is the current set of events for this frame.  Allows GameObjects to check events themselves."""
     events = None
+    """current_scene is the scene we are currently running"""
+    current_scene = None
 
     """We must provide a title for the window, and can optionally
     provide a width and/or height."""
@@ -53,8 +55,8 @@ class Engine:
     def run(self):
         """The main game loop.  As close to our book code as possible."""
         self.running = True
-        if self.scene.music:
-            pygame.mixer.music.load(self.scene.music)
+        if Engine.current_scene.music:
+            pygame.mixer.music.load(Engine.current_scene.music)
             pygame.mixer.music.play(-1)
         while self.running:
             # The time since the last check
@@ -63,27 +65,31 @@ class Engine:
             #self.last_checked_time = now
 
             # Check events
-            events = pygame.event.get()
-            for event in events:
+            Engine.events = pygame.event.get()
+            #if len(Engine.events) > 0:
+            #    print(Engine.events)
+            for event in Engine.events:
                 if event.type == pygame.QUIT:
                     self.running = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.paused = not self.paused
+                        pygame.mixer.music.unpause()
 
             if self.paused:
-                Engine.delta_time = self.clock.tick(self.scene.fps) / 1000.0 # percentage of a second
+                pygame.mixer.music.pause()
+                Engine.delta_time = self.clock.tick(Engine.current_scene.fps) / 1000.0 # percentage of a second
                 continue
 
             # Update updateables
-            for o in self.scene.updateables:
+            for o in Engine.current_scene.updateables:
                 o.update()
 
             # Wipe screen
-            self.screen.fill(self.scene.fill_color)
+            self.screen.fill(Engine.current_scene.fill_color)
             
             # Generate outputs
-            self.scene.drawables.draw(self.screen)
+            Engine.current_scene.drawables.draw(self.screen)
 
             # Show statistics?
             if self.visible_statistics:
@@ -93,7 +99,7 @@ class Engine:
             pygame.display.flip()
 
             # Frame limiting code
-            Engine.delta_time = self.clock.tick(self.scene.fps) / 1000.0 # percentage of a second
+            Engine.delta_time = self.clock.tick(Engine.current_scene.fps) / 1000.0 # percentage of a second
 
     # Show/Hide the engine statistics
     def toggle_statistics(self):
@@ -108,4 +114,5 @@ class Engine:
     
     # Shutdown pygame
     def end(self):
+        pygame.mixer.music.stop()
         pygame.quit()

@@ -7,6 +7,8 @@ import abc
 class GameObject():
     """Any object that makes up our game world."""
     def __init__(self):
+        self.tags = []
+        self.name = None
         self.x = 0.0
         self.y = 0.0
 
