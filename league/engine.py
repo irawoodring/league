@@ -27,6 +27,8 @@ class Engine:
         self.width = width
         self.height = height
         self.init_pygame()
+        # Mode 0 is only redraw dirty areas, mode 1 is redraw full screen
+        self.mode = 0
 
     def init_pygame(self):
         """This function sets up the state of the pygame system,
@@ -55,9 +57,17 @@ class Engine:
     def run(self):
         """The main game loop.  As close to our book code as possible."""
         self.running = True
+
+        if self.mode == 0:
+            self.background = pygame.Surface([self.width, self.height])
+            self.background.fill(Engine.current_scene.fill_color)
+            self.screen.fill(Engine.current_scene.fill_color)
+            Engine.current_scene.drawables.clear(self.screen, self.background)
+
         if Engine.current_scene.music:
             pygame.mixer.music.load(Engine.current_scene.music)
             pygame.mixer.music.play(-1)
+
         while self.running:
             # The time since the last check
             #now = pygame.time.get_ticks()
@@ -86,17 +96,24 @@ class Engine:
                 o.update()
 
             # Wipe screen
-            self.screen.fill(Engine.current_scene.fill_color)
-            
+            if self.mode == 1:
+                self.screen.fill(Engine.current_scene.fill_color)
+                
             # Generate outputs
-            Engine.current_scene.drawables.draw(self.screen)
+            if self.mode == 1:
+                Engine.current_scene.drawables.draw(self.screen)
+            else:
+                rects = Engine.current_scene.drawables.draw(self.screen)
 
             # Show statistics?
             if self.visible_statistics:
                 self.show_statistics()
             
             # Could keep track of rectangles and update here, but eh.
-            pygame.display.flip()
+            if self.mode==1:
+                pygame.display.flip()
+            else:
+                pygame.display.update(rects)
 
             # Frame limiting code
             Engine.delta_time = self.clock.tick(Engine.current_scene.fps) / 1000.0 # percentage of a second
